@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from 'express';
 import { Error } from 'mongoose';
+import { authenticateToken } from '../../config/auth.middleware';
 import { logger } from '../../config/logger.config';
 import { LoggerMiddleware } from '../../middleware/logger.middleware';
 import { IPatient } from './patient.interface';
@@ -17,19 +18,44 @@ import {
 const patientRouter: Router = express.Router();
 
 // Create a new patient
-patientRouter.post('/', LoggerMiddleware.reqLog, createPatient);
+patientRouter.post(
+  '/',
+  LoggerMiddleware.reqLog,
+  authenticateToken,
+  createPatient
+);
 
 // Get all patients
-patientRouter.get('/', LoggerMiddleware.reqLog, getAllPatients);
+patientRouter.get(
+  '/',
+  LoggerMiddleware.reqLog,
+  authenticateToken,
+  getAllPatients
+);
 
 // Get a specific patient by ID
-patientRouter.get('/:id', LoggerMiddleware.reqLog, getPatientById);
+patientRouter.get(
+  '/:id',
+  LoggerMiddleware.reqLog,
+  authenticateToken,
+  getPatientById
+);
 
 // Update a patient by ID
-patientRouter.put('/:id', LoggerMiddleware.reqLog, updatePatientById);
+patientRouter.put(
+  '/:id',
+  LoggerMiddleware.reqLog,
+  authenticateToken,
+  updatePatientById
+);
 
 // Delete a patient by ID
-patientRouter.delete('/:id', LoggerMiddleware.reqLog, deletePatientById);
+patientRouter.delete(
+  '/:id',
+  LoggerMiddleware.reqLog,
+  authenticateToken,
+  deletePatientById
+);
 
 // Create a new patient with dummy data
 patientRouter.get(
@@ -37,19 +63,19 @@ patientRouter.get(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const dummyPatientData = {
-        id: '5',
-        date: new Date('2024-01-29T12:00:00Z'),
-        firstName: 'Eva',
-        lastName: 'White',
-        gender: 'Female',
-        dob: new Date('1987-12-05T00:00:00Z'),
-        pic: 'https://example.com/evawhite.jpg',
-        email: 'eva.white@example.com',
-        phoneNumber: '+1122334455',
-        userName: 'evaw',
-        password: 'evapass',
-        associatedAccountId: 'account111',
-        associatedAccountRelationship: 'Sister',
+        id: '6',
+        date: new Date('2024-02-05T10:30:00Z'),
+        firstName: 'John',
+        lastName: 'Doe',
+        gender: 'Male',
+        dob: new Date('1990-06-15T00:00:00Z'),
+        pic: 'https://example.com/johndoe.jpg',
+        email: 'john.doe@example.com',
+        phoneNumber: '+1234567890',
+        userName: 'johnd',
+        password: 'johnpass',
+        associatedAccountId: 'account222',
+        associatedAccountRelationship: 'Friend',
         deleted: false,
       };
       // Create a new patient using the PatientModel

@@ -6,6 +6,8 @@ import { PatientModel } from './patient.model';
 // Create a new patient
 const createPatient = async (req: Request, res: Response): Promise<void> => {
   try {
+    // Access authenticated patient information
+    const authenticatedPatient = req.user;
     const newPatientData: IPatient = req.body;
     const newPatient = new PatientModel(newPatientData);
     const savedPatient = await newPatient.save();
