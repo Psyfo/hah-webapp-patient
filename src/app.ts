@@ -39,8 +39,13 @@ app.use('/auth', authRouter); // Use router from auth.routes.ts
 setupSwagger(app);
 
 // Start server
-const port = process.env.PORT || 3000; // Use default port if not set
-app.listen(process.env.PORT, () => {
-  logger.info(`Patient microservice listening on port ${port}`);
+const environment = process.env.NODE_ENV || 'development';
+
+// Set the port based on the environment
+const port = process.env.PORT || (environment === 'production' ? 80 : 3000);
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port} in ${environment} mode`);
 });
 //

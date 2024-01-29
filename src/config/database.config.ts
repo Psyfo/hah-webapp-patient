@@ -1,5 +1,5 @@
-import mongoose, { ConnectOptions } from "mongoose";
-import { logger } from "./logger.config";
+import mongoose, { ConnectOptions } from 'mongoose';
+import { logger } from './logger.config';
 
 // Filename: database.ts
 const connectToDatabase = async () => {
@@ -16,9 +16,9 @@ const connectToDatabase = async () => {
         useUnifiedTopology: true,
       } as ConnectOptions
     );
-    logger.info('Connected to MongoDB');
-  } catch (err) {
-    logger.error('Failed to connect to MongoDB', err);
+    logger.info(`Connected to MongoDB at ${dbUrl}`);
+  } catch (err: any) {
+    logger.error('Failed to connect to MongoDB', err.message);
   }
 };
 
