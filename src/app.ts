@@ -44,7 +44,10 @@ const environment = process.env.NODE_ENV || 'development';
 logger.info('Environment: ' + environment);
 
 // Set the port based on the environment
-const port = environment === 'production' ? 80 : process.env.PORT || 3000;
+const port =
+  environment === 'production'
+    ? process.env.PORT || 80
+    : process.env.PORT || 3000;
 // Start the server
 app.listen(port, () => {
   logger.info(`Server is running on port ${port} in ${environment} mode`);
