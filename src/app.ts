@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
+import { loggers } from 'winston';
 import { patientRouter } from './components/patient/patient.routes';
 import { connectToDatabase } from './config/database.config';
 import { logger } from './config/logger.config';
@@ -40,12 +41,12 @@ setupSwagger(app);
 
 // Start server
 const environment = process.env.NODE_ENV || 'development';
+logger.info('Environment: ' + environment);
 
 // Set the port based on the environment
-const port = process.env.PORT || (environment === 'production' ? 80 : 3000);
-
+const port = environment === 'production' ? 80 : process.env.PORT || 3000;
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port} in ${environment} mode`);
+  logger.info(`Server is running on port ${port} in ${environment} mode`);
 });
 //
