@@ -9,10 +9,12 @@ const createPatient = async (req: Request, res: Response): Promise<void> => {
     // Access authenticated patient information
     const authenticatedPatient = req.user;
     const newPatientData: IPatient = req.body;
+    logger.info(`Req body: ${req.body}`);
     const newPatient = new PatientModel(newPatientData);
     const savedPatient = await newPatient.save();
     res.status(201).json(savedPatient);
-  } catch (error) {
+  } catch (error: any) {
+    logger.error(error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
@@ -84,10 +86,38 @@ const deletePatientById = async (
   }
 };
 
+// Check if a patient exists by email
+const patientExistsByEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { email } = req.params;
+
+    // Validate email format (you may want to add more robust validation)
+    if (!email) {
+      res.status(400).json({ error: 'Email is required' });
+    }
+
+    // Check if email exists in the database
+    const user = await PatientModel.findOne({ email });
+
+    if (user) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 export {
   createPatient,
   getAllPatients,
   getPatientById,
   updatePatientById,
   deletePatientById,
+  patientExistsByEmail,
 };

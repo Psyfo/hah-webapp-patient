@@ -12,50 +12,29 @@ import {
   getPatientById,
   updatePatientById,
   deletePatientById,
+  patientExistsByEmail,
 } from './patient.controller';
 
 // router for express
 const patientRouter: Router = express.Router();
 
 // Create a new patient
-patientRouter.post(
-  '/',
-  LoggerMiddleware.reqLog,
-  authenticateToken,
-  createPatient
-);
+patientRouter.post('/', createPatient);
 
 // Get all patients
-patientRouter.get(
-  '/',
-  LoggerMiddleware.reqLog,
-  authenticateToken,
-  getAllPatients
-);
+patientRouter.get('/', LoggerMiddleware.reqLog, getAllPatients);
 
 // Get a specific patient by ID
-patientRouter.get(
-  '/:id',
-  LoggerMiddleware.reqLog,
-  authenticateToken,
-  getPatientById
-);
+patientRouter.get('/:id', LoggerMiddleware.reqLog, getPatientById);
 
 // Update a patient by ID
-patientRouter.put(
-  '/:id',
-  LoggerMiddleware.reqLog,
-  authenticateToken,
-  updatePatientById
-);
+patientRouter.put('/:id', LoggerMiddleware.reqLog, updatePatientById);
 
 // Delete a patient by ID
-patientRouter.delete(
-  '/:id',
-  LoggerMiddleware.reqLog,
-  authenticateToken,
-  deletePatientById
-);
+patientRouter.delete('/:id', LoggerMiddleware.reqLog, deletePatientById);
+
+// Check if patient exists by email
+patientRouter.get('/exists/:email', patientExistsByEmail);
 
 // Create a new patient with dummy data
 patientRouter.get(

@@ -28,9 +28,6 @@ app.use(passport.initialize());
 // Connect to database
 connectToDatabase();
 
-// Error handling
-app.use(errorHandler);
-
 // Routes
 app.use('/', router); // Use router from index.routes.ts
 app.use('/patients', patientRouter); // Use router from patient.routes.ts
@@ -53,3 +50,6 @@ app.listen(port, () => {
   logger.info(`Server is running on port ${port} in ${environment} mode`);
 });
 //
+
+// Error handling
+app.use(errorHandler);

@@ -8,8 +8,9 @@ interface IPatient extends Document {
   dob: Date;
   pic: string;
   email: string;
+  verified: boolean;
   phoneNumber: string;
-  userName: string;
+  username: string;
   password: string;
   associatedAccountId: string;
   associatedAccountRelationship: string;
