@@ -57,8 +57,26 @@ patientSchema.post<IPatient>('save', async function (doc) {
   var mailOptions = {
     from: '"Hah Team" <noreply@healthathome.co.zw>',
     to: doc.email,
-    subject: 'Test Email',
-    html: 'Test email sent successfully.',
+    subject: 'Health at Home Email Verification',
+    html: `    <h1>Health at Home Email Verification</h1>
+    <h2>Click the link to verify your email</h2>
+    
+    <p>Hello!</p>
+    <p>You've just signed up for a Health at Home account with this email.</p>
+    <p>Click this link to verify your email and continue with registering.</p>
+    
+    <a href="#">Verify</a>
+    
+    <p>Having trouble? Copy and paste this link into your browser:</p>
+    <a href="#">Verify link</a>
+    
+    <p>Need help?</p>
+    <p>FAQ: <a href="https://help.healthathome.co.zw/en/">https://help.healthathome.co.zw/en/</a></p>
+    <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
+    <p>Phone: +263 780 147 562</p>
+    <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
+    
+    <button type="button">Verify</button>`,
   };
 
   transport.sendMail(mailOptions, (error, info) => {
