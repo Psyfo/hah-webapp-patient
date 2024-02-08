@@ -79,7 +79,7 @@ patientSchema.post<IPatient>('save', async function (doc) {
     <button type="button">Verify</button>`,
   };
 
-  transport.sendMail(mailOptions, (error, info) => {
+  transport.sendMail(mailOptions, (error: any, info: any) => {
     if (error) {
       return console.log(error);
     }
