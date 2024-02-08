@@ -13,7 +13,7 @@ const patientSchema = new Schema<IPatient>(
     pic: { type: String },
     email: { type: String, unique: true, required: true },
     verified: { type: Boolean, default: false },
-    country: { type: String },
+    country: { type: String, default: 'ZW' },
     phoneNumber: { type: String },
     username: { type: String },
     password: { type: String, required: true },
