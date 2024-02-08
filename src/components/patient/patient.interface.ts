@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document } from "mongoose";
 
 interface IPatient extends Document {
   date: Date;
@@ -9,6 +9,7 @@ interface IPatient extends Document {
   pic: string;
   email: string;
   verified: boolean;
+  country: string;
   phoneNumber: string;
   username: string;
   password: string;
