@@ -74,10 +74,10 @@ patientSchema.post<IPatient>('save', async function (doc) {
     <p>You've just signed up for a Health at Home account with this email.</p>
     <p>Click this link to verify your email and continue with registering.</p>
         
-    <a href="http://yourdomain.com/verify/{{verificationToken}}">Verify</a>
+    <a href="http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}">Verify</a>
         
     <p>Having trouble? Copy and paste this link into your browser:</p>
-    <a href="http://yourdomain.com/verify/{{verificationToken}}">Verify link</a>
+    <p>"http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}"</p>
         
     <p>Need help?</p>
     <p>FAQ: <a href="https://help.healthathome.co.zw/en/">https://help.healthathome.co.zw/en/</a></p>

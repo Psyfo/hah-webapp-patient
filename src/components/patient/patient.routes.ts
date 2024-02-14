@@ -13,6 +13,7 @@ import {
   updatePatientById,
   deletePatientById,
   patientExistsByEmail,
+  getPatientByEmail,
 } from './patient.controller';
 
 // router for express
@@ -26,6 +27,9 @@ patientRouter.get('/', LoggerMiddleware.reqLog, getAllPatients);
 
 // Get a specific patient by ID
 patientRouter.get('/:id', LoggerMiddleware.reqLog, getPatientById);
+
+// Get a specific patient by email
+patientRouter.get('/email/:email', LoggerMiddleware.reqLog, getPatientByEmail);
 
 // Update a patient by ID
 patientRouter.put('/:id', LoggerMiddleware.reqLog, updatePatientById);

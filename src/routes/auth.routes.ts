@@ -51,7 +51,10 @@ authRouter.get('/verify/:token', async (req, res) => {
     patient.verificationToken = undefined;
     await patient.save();
 
-    res.json({ message: 'User verified successfully' });
+    logger.info(`User ${patient.email} verified successfully`);
+    res.json({
+      message: 'User verified successfully, you may close this page',
+    });
   } catch (error) {
     console.error('Verification error:', error);
     res.status(500).json({ message: 'Internal server error' });
