@@ -9,6 +9,7 @@ interface IPatient extends Document {
   pic: string;
   email: string;
   verified: boolean;
+  verificationToken?: string;
   country: string;
   phoneNumber: string;
   username: string;

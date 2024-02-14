@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import mongoose, { Schema, model } from "mongoose";
 import nodemailer from "nodemailer";
-import { IPatient } from "./patient.interface";
+import { customAlphabet } from 'nanoid';
+import { IPatient } from './patient.interface';
 
 const patientSchema = new Schema<IPatient>(
   {
@@ -13,6 +14,7 @@ const patientSchema = new Schema<IPatient>(
     pic: { type: String },
     email: { type: String, unique: true, required: true },
     verified: { type: Boolean, default: false },
+    verificationToken: { type: String },
     country: { type: String, default: 'ZW' },
     phoneNumber: { type: String },
     username: { type: String },
@@ -40,6 +42,12 @@ patientSchema.pre<IPatient>('save', async function (next) {
   const hashedPassword = await bcrypt.hash(patient.password, salt);
 
   patient.password = hashedPassword;
+
+  // Generate verification token
+  const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
+  const verificationToken = nanoid();
+  patient.verificationToken = verificationToken;
+
   next();
 });
 
@@ -58,24 +66,24 @@ patientSchema.post<IPatient>('save', async function (doc) {
     from: '"Hah Team" <noreply@healthathome.co.zw>',
     to: doc.email,
     subject: 'Health at Home Email Verification',
-    html: `    <h1>Health at Home Email Verification</h1>
+    html: `    
+    <h1>Health at Home Email Verification</h1>
     <h2>Click the link to verify your email</h2>
-    
+        
     <p>Hello!</p>
     <p>You've just signed up for a Health at Home account with this email.</p>
     <p>Click this link to verify your email and continue with registering.</p>
-    
-    <a href="#">Verify</a>
-    
+        
+    <a href="http://yourdomain.com/verify/{{verificationToken}}">Verify</a>
+        
     <p>Having trouble? Copy and paste this link into your browser:</p>
-    <a href="#">Verify link</a>
-    
+    <a href="http://yourdomain.com/verify/{{verificationToken}}">Verify link</a>
+        
     <p>Need help?</p>
     <p>FAQ: <a href="https://help.healthathome.co.zw/en/">https://help.healthathome.co.zw/en/</a></p>
     <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
     <p>Phone: +263 780 147 562</p>
     <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
-    
     <button type="button">Verify</button>`,
   };
 
