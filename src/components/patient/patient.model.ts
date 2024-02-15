@@ -80,11 +80,11 @@ patientSchema.post<IPatient>('save', async function (doc) {
     <p>"http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}"</p>
         
     <p>Need help?</p>
-    <p>FAQ: <a href="https://help.healthathome.co.zw/en/">https://help.healthathome.co.zw/en/</a></p>
+    <p>FAQ: <a href="http://hah-webapp-client.vercel.app/faq">https://help.healthathome.co.zw/en/</a></p>
     <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
     <p>Phone: +263 780 147 562</p>
     <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
-    <button type="button">Verify</button>`,
+    `,
   };
 
   transport.sendMail(mailOptions, (error: any, info: any) => {
