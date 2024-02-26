@@ -14,6 +14,7 @@ import {
   deletePatientById,
   patientExistsByEmail,
   getPatientByEmail,
+  resendVerificationEmail,
 } from './patient.controller';
 
 // router for express
@@ -39,6 +40,9 @@ patientRouter.delete('/:id', LoggerMiddleware.reqLog, deletePatientById);
 
 // Check if patient exists by email
 patientRouter.get('/exists/:email', patientExistsByEmail);
+
+// Resend verification email
+patientRouter.get('/resend-verification/:email', resendVerificationEmail);
 
 // Create a new patient with dummy data
 patientRouter.get(

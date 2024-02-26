@@ -10,6 +10,7 @@ interface IPatient extends Document {
   email: string;
   verified: boolean;
   verificationToken?: string;
+  firstVerificationEmailSent: boolean;
   country: string;
   phoneNumber: string;
   username: string;

@@ -1,4 +1,6 @@
+import nodemailer from 'nodemailer';
 import { Request, Response } from 'express';
+import { customAlphabet } from 'nanoid';
 import { logger } from '../../config/logger.config';
 import { IPatient } from './patient.interface';
 import { PatientModel } from './patient.model';
@@ -133,6 +135,88 @@ const patientExistsByEmail = async (
   }
 };
 
+const resendVerificationEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    // Retrieve the email from the request body or wherever you expect it to come from
+    const { email } = req.params;
+
+    // Find the patient by email
+    const patient = await PatientModel.findOne({ email });
+
+    // If patient doesn't exist or is already verified, return an error
+    if (!patient || patient.verified) {
+      res
+        .status(400)
+        .json({ message: 'Patient not found or already verified' });
+    }
+
+    if (patient) {
+      // Regenerate the verification token
+      const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
+      const verificationToken = nanoid();
+      patient.verificationToken = verificationToken;
+
+      // Save the patient with the new verification token
+      await patient.save();
+
+      // Reuse the email template and send verification email
+      const transport = nodemailer.createTransport({
+        host: 'smtp.zeptomail.eu',
+        port: 587,
+        auth: {
+          user: 'emailapikey',
+          pass: 'yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==',
+        },
+      });
+
+      const mailOptions = {
+        from: '"Hah Team" <noreply@healthathome.co.zw>',
+        to: patient.email,
+        subject: 'Health at Home Email Verification',
+        html: `    
+            <h1>Health at Home Email Verification</h1>
+            <h2>Click the link to verify your email</h2>
+                
+            <p>Hello!</p>
+            <p>You've just signed up for a Health at Home account with this email.</p>
+            <p>Click this link to verify your email and continue with registering.</p>
+                
+            <a href="http://hah-webapp-client.vercel.app/verify/${patient.verificationToken}">Verify</a>
+                
+            <p>Having trouble? Copy and paste this link into your browser:</p>
+            <p>"http://hah-webapp-client.vercel.app/verify/${patient.verificationToken}"</p>
+                
+            <p>Need help?</p>
+            <p>FAQ: <a href="http://hah-webapp-client.vercel.app/faq">https://help.healthathome.co.zw/en/</a></p>
+            <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
+            <p>Phone: +263 780 147 562</p>
+            <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
+            `,
+      };
+
+      // Send the email
+      transport.sendMail(mailOptions, (error: any, info: any) => {
+        if (error) {
+          console.log(error);
+          return res
+            .status(500)
+            .json({ message: 'Failed to send verification email' });
+        }
+        console.log('Successfully sent');
+        return res
+          .status(200)
+          .json({ message: 'Verification email sent successfully' });
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export {
   createPatient,
   getAllPatients,
@@ -141,4 +225,5 @@ export {
   updatePatientById,
   deletePatientById,
   patientExistsByEmail,
+  resendVerificationEmail,
 };

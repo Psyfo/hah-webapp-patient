@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import mongoose, { Schema, model } from "mongoose";
 import nodemailer from "nodemailer";
 import { customAlphabet } from 'nanoid';
+import { logger } from '../../config/logger.config';
 import { IPatient } from './patient.interface';
 
 const patientSchema = new Schema<IPatient>(
@@ -15,6 +16,7 @@ const patientSchema = new Schema<IPatient>(
     email: { type: String, unique: true, required: true },
     verified: { type: Boolean, default: false },
     verificationToken: { type: String },
+    firstVerificationEmailSent: { type: Boolean, default: false },
     country: { type: String, default: 'ZW' },
     phoneNumber: { type: String },
     username: { type: String },
@@ -53,6 +55,11 @@ patientSchema.pre<IPatient>('save', async function (next) {
 
 // Define post save middleware to trigger webhook after patient creation
 patientSchema.post<IPatient>('save', async function (doc) {
+  if (doc.firstVerificationEmailSent) {
+    return;
+  }
+
+  logger.info('Sending verification email');
   var transport = nodemailer.createTransport({
     host: 'smtp.zeptomail.eu',
     port: 587,
@@ -67,24 +74,24 @@ patientSchema.post<IPatient>('save', async function (doc) {
     to: doc.email,
     subject: 'Health at Home Email Verification',
     html: `    
-    <h1>Health at Home Email Verification</h1>
-    <h2>Click the link to verify your email</h2>
-        
-    <p>Hello!</p>
-    <p>You've just signed up for a Health at Home account with this email.</p>
-    <p>Click this link to verify your email and continue with registering.</p>
-        
-    <a href="http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}">Verify</a>
-        
-    <p>Having trouble? Copy and paste this link into your browser:</p>
-    <p>"http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}"</p>
-        
-    <p>Need help?</p>
-    <p>FAQ: <a href="http://hah-webapp-client.vercel.app/faq">https://help.healthathome.co.zw/en/</a></p>
-    <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
-    <p>Phone: +263 780 147 562</p>
-    <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
-    `,
+        <h1>Health at Home Email Verification</h1>
+        <h2>Click the link to verify your email</h2>
+            
+        <p>Hello!</p>
+        <p>You've just signed up for a Health at Home account with this email.</p>
+        <p>Click this link to verify your email and continue with registering.</p>
+            
+        <a href="http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}">Verify</a>
+            
+        <p>Having trouble? Copy and paste this link into your browser:</p>
+        <p>"http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}"</p>
+            
+        <p>Need help?</p>
+        <p>FAQ: <a href="http://hah-webapp-client.vercel.app/faq">https://help.healthathome.co.zw/en/</a></p>
+        <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
+        <p>Phone: +263 780 147 562</p>
+        <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
+        `,
   };
 
   transport.sendMail(mailOptions, (error: any, info: any) => {
@@ -93,6 +100,9 @@ patientSchema.post<IPatient>('save', async function (doc) {
     }
     console.log('Successfully sent');
   });
+
+  // Set firstVerificationEmailSent to true
+  doc.firstVerificationEmailSent = true;
 });
 
 const PatientModel = model<IPatient>('Patient', patientSchema);
