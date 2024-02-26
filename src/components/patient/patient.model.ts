@@ -103,6 +103,7 @@ patientSchema.post<IPatient>('save', async function (doc) {
 
   // Set firstVerificationEmailSent to true
   doc.firstVerificationEmailSent = true;
+  doc.save();
 });
 
 const PatientModel = model<IPatient>('Patient', patientSchema);
