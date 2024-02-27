@@ -34,7 +34,9 @@ const verifyEmail = async (req: Request, res: Response) => {
   const token = req.params.token;
 
   try {
-    const patient = await PatientModel.findOne({ verificationToken: token });
+    const patient = await PatientModel.findOne({
+      'account.verificationToken': token,
+    });
     if (!patient) {
       return res
         .status(404)
