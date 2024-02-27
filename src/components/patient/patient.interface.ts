@@ -1,5 +1,14 @@
 import { Document } from "mongoose";
 
+interface IPatientAccount extends Document {
+  firstVerificationEmailSent: boolean;
+  verificationToken?: string;
+  verified: boolean;
+  approvalStatus: string;
+  country: string;
+  deleted: boolean;
+}
+
 interface IPatient extends Document {
   email: string;
   password: string;
@@ -11,13 +20,5 @@ interface IPatient extends Document {
   account: IPatientAccount;
 }
 
-interface IPatientAccount extends Document {
-  firstVerificationEmailSent: boolean;
-  verificationToken?: string;
-  verified: boolean;
-  approvalStatus: string;
-  country: string;
-  deleted: boolean;
-}
 
 export { IPatient, IPatientAccount };
