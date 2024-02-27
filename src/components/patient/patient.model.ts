@@ -8,7 +8,7 @@ import { IPatient, IPatientAccount } from './patient.interface';
 const patientAccountSchema = new Schema<IPatientAccount>(
   {
     verified: { type: Boolean, default: false },
-    verificationToken: { type: String },
+    verificationToken: { type: String, default: '' },
     firstVerificationEmailSent: { type: Boolean, default: false },
     approvalStatus: { type: String, default: 'pending' },
     country: { type: String, default: 'ZW' },
@@ -29,7 +29,7 @@ const patientSchema = new Schema<IPatient>(
     dob: { type: Date },
     imgUrl: { type: String },
     phoneNumber: { type: String },
-    account: patientAccountSchema,
+    account: { type: patientAccountSchema, default: {} },
   },
   {
     timestamps: true,

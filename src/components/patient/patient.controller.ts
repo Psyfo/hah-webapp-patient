@@ -11,7 +11,7 @@ const createPatient = async (req: Request, res: Response): Promise<void> => {
     // Access authenticated patient information
     const authenticatedPatient = req.user;
     const newPatientData: IPatient = req.body;
-    logger.info(`Req body: ${req.body}`);
+    logger.info(`Req body: ${JSON.stringify(req.body)}`);
     const newPatient = new PatientModel(newPatientData);
     const savedPatient = await newPatient.save();
     res.status(201).json(savedPatient);
@@ -157,6 +157,7 @@ const resendVerificationEmail = async (
       // Regenerate the verification token
       const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
       const verificationToken = nanoid();
+      logger.info(`Current patient: ${JSON.stringify(patient)}`);
       patient.account.verificationToken = verificationToken;
       logger.info(`New verification token issued: ${verificationToken}`);
 
