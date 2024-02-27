@@ -3,27 +3,33 @@ import mongoose, { Schema, model } from "mongoose";
 import nodemailer from "nodemailer";
 import { customAlphabet } from 'nanoid';
 import { logger } from '../../config/logger.config';
-import { IPatient } from './patient.interface';
+import { IPatient, IPatientAccount } from './patient.interface';
 
-const patientSchema = new Schema<IPatient>(
+const patientAccountSchema = new Schema<IPatientAccount>(
   {
-    date: { type: Date, default: Date.now },
-    firstName: { type: String },
-    lastName: { type: String },
-    gender: { type: String },
-    dob: { type: Date },
-    pic: { type: String },
-    email: { type: String, unique: true, required: true },
     verified: { type: Boolean, default: false },
     verificationToken: { type: String },
     firstVerificationEmailSent: { type: Boolean, default: false },
+    approvalStatus: { type: String, default: 'pending' },
     country: { type: String, default: 'ZW' },
-    phoneNumber: { type: String },
-    username: { type: String },
-    password: { type: String, required: true },
-    associatedAccountId: { type: String },
-    associatedAccountRelationship: { type: String },
     deleted: { type: Boolean, default: false },
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+const patientSchema = new Schema<IPatient>(
+  {
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    firstName: { type: String },
+    lastName: { type: String },
+    dob: { type: Date },
+    imgUrl: { type: String },
+    phoneNumber: { type: String },
+    account: patientAccountSchema,
   },
   {
     timestamps: true,
@@ -48,14 +54,14 @@ patientSchema.pre<IPatient>('save', async function (next) {
   // Generate verification token
   const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
   const verificationToken = nanoid();
-  patient.verificationToken = verificationToken;
+  patient.account.verificationToken = verificationToken;
 
   next();
 });
 
 // Define post save middleware to trigger webhook after patient creation
 patientSchema.post<IPatient>('save', async function (doc) {
-  if (doc.firstVerificationEmailSent) {
+  if (doc.account.firstVerificationEmailSent) {
     return;
   }
 
@@ -81,10 +87,10 @@ patientSchema.post<IPatient>('save', async function (doc) {
         <p>You've just signed up for a Health at Home account with this email.</p>
         <p>Click this link to verify your email and continue with registering.</p>
             
-        <a href="http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}">Verify</a>
+        <a href="http://hah-webapp-client.vercel.app/verify/${doc.account.verificationToken}">Verify</a>
             
         <p>Having trouble? Copy and paste this link into your browser:</p>
-        <p>"http://hah-webapp-client.vercel.app/verify/${doc.verificationToken}"</p>
+        <p>"http://hah-webapp-client.vercel.app/verify/${doc.account.verificationToken}"</p>
             
         <p>Need help?</p>
         <p>FAQ: <a href="http://hah-webapp-client.vercel.app/faq">https://help.healthathome.co.zw/en/</a></p>
@@ -102,7 +108,7 @@ patientSchema.post<IPatient>('save', async function (doc) {
   });
 
   // Set firstVerificationEmailSent to true
-  doc.firstVerificationEmailSent = true;
+  doc.account.firstVerificationEmailSent = true;
   doc.save();
 });
 

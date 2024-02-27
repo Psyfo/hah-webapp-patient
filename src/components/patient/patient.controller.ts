@@ -147,7 +147,7 @@ const resendVerificationEmail = async (
     const patient = await PatientModel.findOne({ email });
 
     // If patient doesn't exist or is already verified, return an error
-    if (!patient || patient.verified) {
+    if (!patient || patient.account.verified) {
       res
         .status(400)
         .json({ message: 'Patient not found or already verified' });
@@ -157,7 +157,8 @@ const resendVerificationEmail = async (
       // Regenerate the verification token
       const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
       const verificationToken = nanoid();
-      patient.verificationToken = verificationToken;
+      patient.account.verificationToken = verificationToken;
+      logger.info(`New verification token issued: ${verificationToken}`);
 
       // Save the patient with the new verification token
       await patient.save();
@@ -184,10 +185,10 @@ const resendVerificationEmail = async (
             <p>You've just signed up for a Health at Home account with this email.</p>
             <p>Click this link to verify your email and continue with registering.</p>
                 
-            <a href="http://hah-webapp-client.vercel.app/verify/${patient.verificationToken}">Verify</a>
+            <a href="http://hah-webapp-client.vercel.app/verify/${patient.account.verificationToken}">Verify</a>
                 
             <p>Having trouble? Copy and paste this link into your browser:</p>
-            <p>"http://hah-webapp-client.vercel.app/verify/${patient.verificationToken}"</p>
+            <p>"http://hah-webapp-client.vercel.app/verify/${patient.account.verificationToken}"</p>
                 
             <p>Need help?</p>
             <p>FAQ: <a href="http://hah-webapp-client.vercel.app/faq">https://help.healthathome.co.zw/en/</a></p>

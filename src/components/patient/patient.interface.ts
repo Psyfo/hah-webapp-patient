@@ -1,23 +1,23 @@
 import { Document } from "mongoose";
 
 interface IPatient extends Document {
-  date: Date;
+  email: string;
+  password: string;
   firstName: string;
   lastName: string;
-  gender: string;
   dob: Date;
-  pic: string;
-  email: string;
-  verified: boolean;
-  verificationToken?: string;
-  firstVerificationEmailSent: boolean;
-  country: string;
+  imgUrl: string;
   phoneNumber: string;
-  username: string;
-  password: string;
-  associatedAccountId: string;
-  associatedAccountRelationship: string;
+  account: IPatientAccount;
+}
+
+interface IPatientAccount extends Document {
+  firstVerificationEmailSent: boolean;
+  verificationToken?: string;
+  verified: boolean;
+  approvalStatus: string;
+  country: string;
   deleted: boolean;
 }
 
-export { IPatient };
+export { IPatient, IPatientAccount };
