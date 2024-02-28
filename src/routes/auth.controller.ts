@@ -49,7 +49,7 @@ const verifyEmail = async (req: Request, res: Response) => {
 
     logger.info(`User ${patient.email} verified successfully`);
     res.json({
-      message: 'User verified successfully, you may close this page',
+      message: 'Congratulations! Your email has been verified.',
     });
   } catch (error) {
     console.error('Verification error:', error);
