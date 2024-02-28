@@ -139,6 +139,11 @@ const resendVerificationEmail = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  const frontEndUrl: string | undefined =
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
+
   try {
     // Retrieve the email from the request body or wherever you expect it to come from
     const { email } = req.params;
@@ -186,13 +191,13 @@ const resendVerificationEmail = async (
             <p>You've just signed up for a Health at Home account with this email.</p>
             <p>Click this link to verify your email and continue with registering.</p>
                 
-            <a href="http://hah-webapp-client.vercel.app/verify/${patient.account.verificationToken}">Verify</a>
+            <a href="${frontEndUrl}/verify/${patient.account.verificationToken}">Verify</a>
                 
             <p>Having trouble? Copy and paste this link into your browser:</p>
-            <p>"http://hah-webapp-client.vercel.app/verify/${patient.account.verificationToken}"</p>
+            <p>"${frontEndUrl}/verify/${patient.account.verificationToken}"</p>
                 
             <p>Need help?</p>
-            <p>FAQ: <a href="http://hah-webapp-client.vercel.app/faq">https://help.healthathome.co.zw/en/</a></p>
+            <p>FAQ: <a href="${frontEndUrl}/faq">${frontEndUrl}/faq</a></p>
             <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
             <p>Phone: +263 780 147 562</p>
             <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
