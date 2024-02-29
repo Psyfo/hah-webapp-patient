@@ -33,7 +33,7 @@ patientRouter.get('/:id', LoggerMiddleware.reqLog, getPatientById);
 patientRouter.get('/email/:email', LoggerMiddleware.reqLog, getPatientByEmail);
 
 // Update a patient by ID
-patientRouter.put('/:id', LoggerMiddleware.reqLog, updatePatientById);
+patientRouter.patch('/:id', LoggerMiddleware.reqLog, updatePatientById);
 
 // Delete a patient by ID
 patientRouter.delete('/:id', LoggerMiddleware.reqLog, deletePatientById);

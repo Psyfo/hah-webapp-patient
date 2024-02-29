@@ -75,15 +75,20 @@ const updatePatientById = async (
   try {
     const patientId = req.params.id;
     const updatedPatientData: IPatient = req.body;
+
+    logger.info(`Updated patient data: ${JSON.stringify(updatedPatientData)}`);
+
     const updatedPatient = await PatientModel.findByIdAndUpdate(
       patientId,
       updatedPatientData,
       { new: true }
     );
+
     if (!updatedPatient) {
       res.status(404).json({ error: 'Patient not found' });
       return;
     }
+
     res.status(200).json(updatedPatient);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
