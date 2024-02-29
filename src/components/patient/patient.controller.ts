@@ -90,8 +90,9 @@ const updatePatientById = async (
     }
 
     res.status(200).json(updatedPatient);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: 'Internal Server Error' });
+    logger.error(error.message);
   }
 };
 

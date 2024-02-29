@@ -4,6 +4,7 @@ interface IPatientAccount extends Document {
   firstVerificationEmailSent: boolean;
   verificationToken?: string;
   verified: boolean;
+  activationStep: number;
   approvalStatus: string;
   country: string;
   deleted: boolean;
