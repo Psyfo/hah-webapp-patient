@@ -11,6 +11,7 @@ import { setupSwagger } from './config/swagger.config';
 import { errorHandler } from './middleware/error.middleware';
 import { authRouter } from './routes/auth.routes';
 import { router } from './routes/index.routes';
+import { uploadRouter } from './routes/upload.routes';
 
 const app = express();
 dotenv.config();
@@ -32,6 +33,7 @@ connectToDatabase();
 app.use('/', router); // Use router from index.routes.ts
 app.use('/patients', patientRouter); // Use router from patient.routes.ts
 app.use('/auth', authRouter); // Use router from auth.routes.ts
+app.use('/uploads', uploadRouter);
 
 // Swagger
 setupSwagger(app);
