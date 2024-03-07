@@ -11,7 +11,11 @@ const patientAccountSchema = new Schema<IPatientAccount>(
     verificationToken: { type: String, default: '' },
     firstVerificationEmailSent: { type: Boolean, default: false },
     activationStep: { type: Number, default: 0 },
-    approvalStatus: { type: String, default: 'pending' },
+    approvalStatus: {
+      type: String,
+      enum: ['pending', 'approved'],
+      default: 'pending',
+    },
     country: { type: String, default: 'ZW' },
     deleted: { type: Boolean, default: false },
   },

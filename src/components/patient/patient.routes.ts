@@ -39,7 +39,11 @@ patientRouter.patch('/:id', LoggerMiddleware.reqLog, updatePatientById);
 patientRouter.delete('/:id', LoggerMiddleware.reqLog, deletePatientById);
 
 // Check if patient exists by email
-patientRouter.get('/exists/:email', patientExistsByEmail);
+patientRouter.get(
+  '/exists/:email',
+  LoggerMiddleware.reqLog,
+  patientExistsByEmail
+);
 
 // Resend verification email
 patientRouter.get('/resend-verification/:email', resendVerificationEmail);
