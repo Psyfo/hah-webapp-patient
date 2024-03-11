@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
+import { AdminModel } from '../components/admin/admin.model';
 import { IPatient } from '../components/patient/patient.interface';
 import { PatientModel } from '../components/patient/patient.model';
 import { logger } from '../config/logger.config';
@@ -21,6 +22,29 @@ const login = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign({ sub: patient._id }, 'your-secret-key', {
+      expiresIn: '30m',
+    });
+    res.json({ token });
+  } catch (error: any) {
+    logger.error(JSON.stringify(error.message));
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+const adminLogin = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    const admin = await AdminModel.findOne({
+      email,
+    });
+    if (!admin) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+    const token = jwt.sign({ sub: admin._id }, 'your-secret-key', {
       expiresIn: '30m',
     });
     res.json({ token });
@@ -57,4 +81,4 @@ const verifyEmail = async (req: Request, res: Response) => {
   }
 };
 
-export { login, verifyEmail };
+export { login, adminLogin, verifyEmail };
