@@ -5,6 +5,7 @@ interface IAdminAccount extends Document {
   verificationToken?: string;
   verified: boolean;
   deleted: boolean;
+  role: string;
 }
 
 interface IAdmin extends Document {

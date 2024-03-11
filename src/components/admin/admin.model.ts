@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
-import { logger } from '../../config/logger.config';
 import { IAdmin, IAdminAccount } from './admin.interface';
 
 const AdminAccountSchema = new mongoose.Schema<IAdminAccount>(
@@ -9,6 +8,7 @@ const AdminAccountSchema = new mongoose.Schema<IAdminAccount>(
     verificationToken: { type: String, default: '' },
     verified: { type: Boolean, default: false },
     deleted: { type: Boolean, default: false },
+    role: { type: String, default: 'admin' },
   },
   {
     toJSON: { virtuals: true },
