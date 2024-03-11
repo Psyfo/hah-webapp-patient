@@ -18,6 +18,7 @@ const patientAccountSchema = new Schema<IPatientAccount>(
     },
     country: { type: String, default: 'ZW' },
     deleted: { type: Boolean, default: false },
+    role: { type: String, default: 'patient' },
   },
   {
     toJSON: { virtuals: true },
