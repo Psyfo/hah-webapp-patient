@@ -35,7 +35,7 @@ app.use('/', router); // Use router from index.routes.ts
 app.use('/patients', patientRouter); // Use router from patient.routes.ts
 app.use('/auth', authRouter); // Use router from auth.routes.ts
 app.use('/upload', uploadRouter);
-app.use('/admin', adminRouter);
+app.use('/admins', adminRouter);
 
 // Swagger
 setupSwagger(app);
