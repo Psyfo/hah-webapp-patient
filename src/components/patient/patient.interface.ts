@@ -12,6 +12,7 @@ interface IPatientAccount extends Document {
 }
 
 interface IPatient extends Document {
+  id: string;
   email: string;
   password: string;
   firstName: string;

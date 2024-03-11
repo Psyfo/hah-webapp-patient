@@ -9,6 +9,7 @@ interface IAdminAccount extends Document {
 }
 
 interface IAdmin extends Document {
+  id: string;
   email: string;
   password: string;
   dob: Date;
