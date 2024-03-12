@@ -35,9 +35,11 @@ AdminSchema.pre('save', async function (next) {
   const admin = this;
 
   if (!admin.isModified('password')) {
+    console.log('Password not modified');
     return next();
   }
 
+  console.log('Password modified');
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(admin.password, salt);
 

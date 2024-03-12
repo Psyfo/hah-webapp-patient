@@ -8,12 +8,12 @@ async function seedAdminAccount() {
   try {
     const adminCount = await AdminModel.countDocuments();
     if (adminCount === 0) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('Password12@', salt);
+      //   const salt = await bcrypt.genSalt(10);
+      //   const hashedPassword = await bcrypt.hash('Password12@', salt);
 
       const adminData = {
         email: 'admin@healthathome.co.zw',
-        password: hashedPassword,
+        password: 'Password12@',
         account: { verified: true, role: 'admin' }, // You may add other default account data here
       };
 
