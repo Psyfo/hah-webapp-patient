@@ -18,7 +18,11 @@ const patientAccountSchema = new Schema<IPatientAccount>(
     },
     country: { type: String, default: 'ZW' },
     deleted: { type: Boolean, default: false },
-    active: { type: Boolean, default: true },
+    active: {
+      type: String,
+      enum: ['active', 'blocked', 'deleted'],
+      default: 'active',
+    },
     role: { type: String, default: 'patient' },
   },
   {
