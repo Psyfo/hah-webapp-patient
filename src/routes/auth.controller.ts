@@ -38,11 +38,11 @@ const adminLogin = async (req: Request, res: Response) => {
       email,
     });
     if (!admin) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'No Admin found' });
     }
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Password not valid' });
     }
     const token = jwt.sign({ sub: admin._id }, 'your-secret-key', {
       expiresIn: '30m',
@@ -50,7 +50,7 @@ const adminLogin = async (req: Request, res: Response) => {
     res.json({ token });
   } catch (error: any) {
     logger.error(JSON.stringify(error.message));
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: error.message || 'Internal Server Error' });
   }
 };
 
