@@ -180,7 +180,7 @@ const deletePatientById = async (
     const patientId = req.params.id;
     const deletedPatient = await PatientModel.findByIdAndUpdate(
       patientId,
-      { accountStatus: 'deleted' },
+      { 'account.accountStatus': 'deleted' },
       { new: true }
     );
     if (!deletedPatient) {
@@ -202,7 +202,7 @@ const deletePatientByEmail = async (
     const email = req.params.email;
     const deletedPatient = await PatientModel.findOneAndUpdate(
       { email: email },
-      { accountStatus: 'deleted' },
+      { 'account.accountStatus': 'deleted' },
       { new: true }
     );
     if (!deletedPatient) {
@@ -224,7 +224,7 @@ const reactivatePatientByEmail = async (
     const email = req.params.email;
     const reactivatedPatient = await PatientModel.findByIdAndUpdate(
       email,
-      { accountStatus: 'active' },
+      { 'account.accountStatus': 'active' },
       { new: true }
     );
     if (!reactivatedPatient) {
@@ -246,7 +246,7 @@ const blockPatientByEmail = async (
     const email = req.params.email;
     const blockedPatient = await PatientModel.findByIdAndUpdate(
       email,
-      { accountStatus: 'blocked' },
+      { 'account.accountStatus': 'blocked' },
       { new: true }
     );
     if (!blockedPatient) {
