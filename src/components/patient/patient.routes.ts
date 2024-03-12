@@ -26,6 +26,15 @@ patientRouter.post('/', createPatient);
 // Get all patients
 patientRouter.get('/', LoggerMiddleware.reqLog, getAllPatients);
 
+// Get all active patients
+patientRouter.get('/active', LoggerMiddleware.reqLog, getAllPatients);
+
+// Get all blocked patients
+patientRouter.get('/blocked', LoggerMiddleware.reqLog, getAllPatients);
+
+// Get all deleted patients
+patientRouter.get('/deleted', LoggerMiddleware.reqLog, getAllPatients);
+
 // Get a specific patient by ID
 patientRouter.get('/:id', LoggerMiddleware.reqLog, getPatientById);
 
@@ -35,8 +44,36 @@ patientRouter.get('/email/:email', LoggerMiddleware.reqLog, getPatientByEmail);
 // Update a patient by ID
 patientRouter.patch('/:id', LoggerMiddleware.reqLog, updatePatientById);
 
+// Update a patient by email
+patientRouter.patch(
+  '/email/:email',
+  LoggerMiddleware.reqLog,
+  updatePatientById
+);
+
 // Delete a patient by ID
 patientRouter.delete('/:id', LoggerMiddleware.reqLog, deletePatientById);
+
+// Delete a patient by email
+patientRouter.delete(
+  '/email/:email',
+  LoggerMiddleware.reqLog,
+  deletePatientById
+);
+
+// Reactivate a patient by email
+patientRouter.patch(
+  '/reactivate/:email',
+  LoggerMiddleware.reqLog,
+  updatePatientById
+);
+
+// Block a patient by email
+patientRouter.patch(
+  '/block/:email',
+  LoggerMiddleware.reqLog,
+  updatePatientById
+);
 
 // Check if patient exists by email
 patientRouter.get(
@@ -47,41 +84,5 @@ patientRouter.get(
 
 // Resend verification email
 patientRouter.get('/resend-verification/:email', resendVerificationEmail);
-
-// Create a new patient with dummy data
-patientRouter.get(
-  '/patient/addDummy',
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-      const dummyPatientData = {
-        id: '6',
-        date: new Date('2024-02-05T10:30:00Z'),
-        firstName: 'John',
-        lastName: 'Doe',
-        gender: 'Male',
-        dob: new Date('1990-06-15T00:00:00Z'),
-        pic: 'https://example.com/johndoe.jpg',
-        email: 'john.doe@example.com',
-        phoneNumber: '+1234567890',
-        userName: 'johnd',
-        password: 'johnpass',
-        associatedAccountId: 'account222',
-        associatedAccountRelationship: 'Friend',
-        deleted: false,
-      };
-      // Create a new patient using the PatientModel
-      const newPatient = new PatientModel(dummyPatientData);
-      //const savedPatient = await newPatient.save();
-      await newPatient.save();
-
-      // Respond with the newly created patient
-      res.status(201).json(newPatient);
-    } catch (error: any) {
-      logger.error(JSON.stringify(error));
-
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  }
-);
 
 export { patientRouter };

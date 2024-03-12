@@ -31,6 +31,51 @@ const getAllPatients = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// Get active patients
+const getActivePatients = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const patients = await PatientModel.find({
+      'account.accountStatus': 'active',
+    });
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Get blocked patients
+const getBlockedPatients = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const patients = await PatientModel.find({
+      'account.accountStatus': 'blocked',
+    });
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Get deleted patients
+const getDeletedPatients = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const patients = await PatientModel.find({
+      'account.accountStatus': 'deleted',
+    });
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 // Get a specific patient by ID
 const getPatientById = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -47,6 +92,7 @@ const getPatientById = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// Get a specific patient by Email
 const getPatientByEmail = async (
   req: Request,
   res: Response
@@ -96,6 +142,35 @@ const updatePatientById = async (
   }
 };
 
+// Update a patient by Email
+const updatePatientByEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const email = req.params.email;
+    const updatedPatientData: IPatient = req.body;
+
+    logger.info(`Updated patient data: ${JSON.stringify(updatedPatientData)}`);
+
+    const updatedPatient = await PatientModel.findOneAndUpdate(
+      { email: email },
+      updatedPatientData,
+      { new: true }
+    );
+
+    if (!updatedPatient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+
+    res.status(200).json(updatedPatient);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Internal Server Error' });
+    logger.error(error.message);
+  }
+};
+
 // Delete a patient by ID
 const deletePatientById = async (
   req: Request,
@@ -105,7 +180,7 @@ const deletePatientById = async (
     const patientId = req.params.id;
     const deletedPatient = await PatientModel.findByIdAndUpdate(
       patientId,
-      { active: false },
+      { accountStatus: 'deleted' },
       { new: true }
     );
     if (!deletedPatient) {
@@ -113,6 +188,72 @@ const deletePatientById = async (
       return;
     }
     res.status(204).json();
+  } catch (error: any) {
+    res.status(500).json({ error: JSON.stringify(error) });
+  }
+};
+
+// Delete a patient by Email
+const deletePatientByEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const email = req.params.email;
+    const deletedPatient = await PatientModel.findOneAndUpdate(
+      { email: email },
+      { accountStatus: 'deleted' },
+      { new: true }
+    );
+    if (!deletedPatient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+    res.status(204).json();
+  } catch (error: any) {
+    res.status(500).json({ error: JSON.stringify(error) });
+  }
+};
+
+// Reactivate a patient by Email
+const reactivatePatientByEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const email = req.params.email;
+    const reactivatedPatient = await PatientModel.findByIdAndUpdate(
+      email,
+      { accountStatus: 'active' },
+      { new: true }
+    );
+    if (!reactivatedPatient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+    res.status(200).json(reactivatedPatient);
+  } catch (error: any) {
+    res.status(500).json({ error: JSON.stringify(error) });
+  }
+};
+
+// Block a patient by Email
+const blockPatientByEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const email = req.params.email;
+    const blockedPatient = await PatientModel.findByIdAndUpdate(
+      email,
+      { accountStatus: 'blocked' },
+      { new: true }
+    );
+    if (!blockedPatient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+    res.status(200).json(blockedPatient);
   } catch (error: any) {
     res.status(500).json({ error: JSON.stringify(error) });
   }
@@ -237,10 +378,17 @@ const resendVerificationEmail = async (
 export {
   createPatient,
   getAllPatients,
+  getActivePatients,
+  getBlockedPatients,
+  getDeletedPatients,
   getPatientById,
   getPatientByEmail,
   updatePatientById,
+  updatePatientByEmail,
   deletePatientById,
+  deletePatientByEmail,
+  reactivatePatientByEmail,
+  blockPatientByEmail,
   patientExistsByEmail,
   resendVerificationEmail,
 };

@@ -7,8 +7,7 @@ interface IPatientAccount extends Document {
   activationStep: number;
   approvalStatus: string;
   country: string;
-  deleted: boolean;
-  active: string;
+  accountStatus: string;
   role: string;
 }
 

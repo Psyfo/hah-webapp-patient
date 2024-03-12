@@ -17,8 +17,7 @@ const patientAccountSchema = new Schema<IPatientAccount>(
       default: 'pending',
     },
     country: { type: String, default: 'ZW' },
-    deleted: { type: Boolean, default: false },
-    active: {
+    accountStatus: {
       type: String,
       enum: ['active', 'blocked', 'deleted'],
       default: 'active',
