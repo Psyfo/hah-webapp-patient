@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import mongoose, { Schema, model } from "mongoose";
 import nodemailer from "nodemailer";
-import { customAlphabet } from 'nanoid';
-import { logger } from '../../config/logger.config';
-import { IPatient, IPatientAccount } from './patient.interface';
+import { customAlphabet } from "nanoid";
+import { logger } from "../../config/logger.config";
+import { IPatient, IPatientAccount } from "./patient.interface";
 
 const patientAccountSchema = new Schema<IPatientAccount>(
   {
@@ -18,6 +18,7 @@ const patientAccountSchema = new Schema<IPatientAccount>(
     },
     country: { type: String, default: 'ZW' },
     deleted: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
     role: { type: String, default: 'patient' },
   },
   {

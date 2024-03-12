@@ -103,14 +103,18 @@ const deletePatientById = async (
 ): Promise<void> => {
   try {
     const patientId = req.params.id;
-    const deletedPatient = await PatientModel.findByIdAndDelete(patientId);
+    const deletedPatient = await PatientModel.findByIdAndUpdate(
+      patientId,
+      { active: false },
+      { new: true }
+    );
     if (!deletedPatient) {
       res.status(404).json({ error: 'Patient not found' });
       return;
     }
     res.status(204).json();
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+  } catch (error: any) {
+    res.status(500).json({ error: JSON.stringify(error) });
   }
 };
 
