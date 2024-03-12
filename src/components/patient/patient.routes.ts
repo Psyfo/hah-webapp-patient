@@ -21,7 +21,7 @@ import {
 const patientRouter: Router = express.Router();
 
 // Create a new patient
-patientRouter.post('/', createPatient);
+patientRouter.post('/', LoggerMiddleware.reqLog, createPatient);
 
 // Get all patients
 patientRouter.get('/', LoggerMiddleware.reqLog, getAllPatients);
@@ -83,6 +83,10 @@ patientRouter.get(
 );
 
 // Resend verification email
-patientRouter.get('/resend-verification/:email', resendVerificationEmail);
+patientRouter.get(
+  '/resend-verification/:email',
+  LoggerMiddleware.reqLog,
+  resendVerificationEmail
+);
 
 export { patientRouter };
