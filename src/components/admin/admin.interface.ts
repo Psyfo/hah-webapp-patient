@@ -1,10 +1,10 @@
-import { Document } from 'mongoose';
+import { Document } from "mongoose";
 
 interface IAdminAccount extends Document {
   firstVerificationEmailSent: boolean;
   verificationToken?: string;
   verified: boolean;
-  deleted: boolean;
+  accountStatus: string;
   role: string;
 }
 

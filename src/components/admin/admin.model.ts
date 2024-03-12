@@ -7,7 +7,11 @@ const AdminAccountSchema = new mongoose.Schema<IAdminAccount>(
     firstVerificationEmailSent: { type: Boolean, default: false },
     verificationToken: { type: String, default: '' },
     verified: { type: Boolean, default: false },
-    deleted: { type: Boolean, default: false },
+    accountStatus: {
+      type: String,
+      enum: ['active', 'blocked', 'deleted'],
+      default: 'active',
+    },
     role: { type: String, default: 'admin' },
   },
   {
