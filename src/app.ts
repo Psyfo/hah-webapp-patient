@@ -3,7 +3,6 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import passport from 'passport';
-import { loggers } from 'winston';
 import { adminRouter } from './components/admin/admin.routes';
 import { patientRouter } from './components/patient/patient.routes';
 import { connectToDatabase } from './config/database.config';
