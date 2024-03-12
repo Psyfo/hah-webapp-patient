@@ -41,6 +41,7 @@ const adminLogin = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'No Admin found' });
     }
     const isPasswordValid = await bcrypt.compare(password, admin.password);
+    console.log(`isPasswordValid: ${isPasswordValid}`);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Password not valid' });
     }
