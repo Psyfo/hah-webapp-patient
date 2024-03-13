@@ -1,10 +1,5 @@
-import express, { Request, Response, Router } from 'express';
-import { Error } from 'mongoose';
-import { authenticateToken } from '../../config/auth.middleware';
-import { logger } from '../../config/logger.config';
-import { LoggerMiddleware } from '../../middleware/logger.middleware';
-import { IPatient } from './patient.interface';
-import { PatientModel } from './patient.model';
+import express, { Request, Response, Router } from "express";
+import { LoggerMiddleware } from "../../middleware/logger.middleware";
 
 import {
   createPatient,
