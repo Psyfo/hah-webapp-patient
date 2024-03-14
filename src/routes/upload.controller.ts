@@ -1,43 +1,294 @@
-import B2 from 'backblaze-b2';
-import { NextFunction, Request, Response } from 'express';
-import { logger } from '../config/logger.config';
+import admin from "firebase-admin";
+import { Request, Response } from "express";
+import { v4 as uuidv4 } from "uuid";
+import { AdminModel } from "../components/admin/admin.model";
+import { PatientModel } from "../components/patient/patient.model";
+import { PractitionerModel } from "../components/practitioner/practitioner.model";
+import { logger } from "../config/logger.config";
 
-// Configure Backblaze B2 client
-const b2 = new B2({
-  applicationKeyId: '0056f44309948fc0000000002',
-  applicationKey: 'K005yZEQQuOzdm88oWAPQ2bT20nu9aY',
+// Initialize Firebase Admin SDK
+const serviceAccountKeyPath =
+  process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH ||
+  'src/config/serviceAccountKey.json';
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccountKeyPath),
+  storageBucket: 'gs://webapp-90a63.appspot.com',
 });
 
-const uploadPatientID = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const uploadPatientID = async (req: Request, res: Response) => {
+  logger.info('Uploading patient ID');
+
   try {
-    await b2.authorize();
-    const bucket = await b2.getBucket({ bucketName: 'HealthAtHome' });
-    const bucketId = bucket.data.bucketId;
-    const uploadUrl = await b2.getUploadUrl({ bucketId: bucketId });
+    const { email } = req?.body;
+    console.log('Email:', email);
+    const file = req.file;
+    console.log('File:', file?.originalname);
 
-    // Assuming you have the file data in req.body.fileData and filename in req.body.fileName
-    const fileData = req.body.fileData;
-    const fileName = req.body.fileName;
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
 
-    // Uploading the file to Backblaze B2
-    // const uploadResult = await b2.uploadFile({
-    //     uploadUrl: uploadUrl.data.uploadUrl,
-    //     uploadAuthToken: uploadUrl.data.authorizationToken,
-    //     filename: fileName,
-    //     data: fileData,
-    // });
+    const bucket = admin.storage().bucket(); // Get a reference to the bucket
 
-    // console.log('File uploaded:', uploadResult.data);
+    // Generate a unique filename for the document
+    const filename = `${uuidv4()}-${file?.originalname}`; // Use UUID to avoid filename conflicts
+    console.log('Filename:', filename);
 
-    // Respond with success message or do further processing
-    res.status(200).json({ message: 'File uploaded successfully' });
-  } catch (err) {
-    logger.error('Error getting bucket', err);
+    // Specify the destination folder (patient-id in this case)
+    const destination = `patient-id/${filename}`;
+    console.log('Destination:', destination);
+
+    // Upload the document to Firebase Storage
+    await bucket.file(destination).save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+      public: true, // Make the document publicly accessible
+    });
+
+    // Construct the public URL for accessing the uploaded document
+    const fileUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    console.log('File URL:', fileUrl);
+
+    // Update the patient model with the URL of the uploaded image
+    const patient = await PatientModel.findOneAndUpdate(
+      { email: email },
+      { $set: { idUrl: fileUrl } },
+      { new: true }
+    );
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    // Respond with the URL of the uploaded document
+    res.json({ url: fileUrl });
+  } catch (error: any) {
+    console.error('Error uploading document:', error.message);
+    res.status(500).json({ error: error.message });
   }
 };
 
-export { uploadPatientID };
+const uploadPractitionerID = async (req: Request, res: Response) => {
+  logger.info('Uploading practitioner ID');
+
+  try {
+    const { email } = req?.body;
+    console.log('Email:', email);
+    const file = req.file;
+    console.log('File:', file?.originalname);
+
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const bucket = admin.storage().bucket(); // Get a reference to the bucket
+
+    // Generate a unique filename for the document
+    const filename = `${uuidv4()}-${file?.originalname}`; // Use UUID to avoid filename conflicts
+    console.log('Filename:', filename);
+
+    // Specify the destination folder (practitioner-id in this case)
+    const destination = `practitioner-id/${filename}`;
+    console.log('Destination:', destination);
+
+    // Upload the document to Firebase Storage
+    await bucket.file(destination).save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+      public: true, // Make the document publicly accessible
+    });
+
+    // Construct the public URL for accessing the uploaded document
+    const fileUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    console.log('File URL:', fileUrl);
+
+    // Update the practitioner model with the URL of the uploaded image
+    const practitioner = await PractitionerModel.findOneAndUpdate(
+      { email: email },
+      { $set: { idUrl: fileUrl } },
+      { new: true }
+    );
+
+    if (!practitioner) {
+      return res.status(404).json({ error: 'Practitioner not found' });
+    }
+
+    // Respond with the URL of the uploaded document
+    res.json({ url: fileUrl });
+  } catch (error: any) {
+    console.error('Error uploading document:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const uploadPatientAvatar = async (req: Request, res: Response) => {
+  logger.info('Uploading patient avatar');
+
+  try {
+    const { email } = req?.body;
+    console.log('Email:', email);
+    const file = req.file;
+    console.log('File:', file?.originalname);
+
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const bucket = admin.storage().bucket(); // Get a reference to the bucket
+
+    // Generate a unique filename for the avatar
+    const filename = `${uuidv4()}-${file?.originalname}`; // Use UUID to avoid filename conflicts
+    console.log('Filename:', filename);
+
+    // Specify the destination folder (avatars in this case)
+    const destination = `patient-avatar/${filename}`;
+    console.log('Destination:', destination);
+
+    // Upload the avatar to Firebase Storage
+    await bucket.file(destination).save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+      public: true, // Make the avatar publicly accessible
+    });
+
+    // Construct the public URL for accessing the uploaded avatar
+    const fileUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    console.log('File URL:', fileUrl);
+
+    // Update the patient model with the URL of the uploaded avatar
+    const patient = await PatientModel.findOneAndUpdate(
+      { email: email },
+      { $set: { avatarUrl: fileUrl } },
+      { new: true }
+    );
+
+    if (!patient) {
+      return res.status(404).json({ error: 'Patient not found' });
+    }
+
+    // Respond with the URL of the uploaded avatar
+    res.json({ url: fileUrl });
+  } catch (error: any) {
+    console.error('Error uploading avatar:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const uploadPractitionerAvatar = async (req: Request, res: Response) => {
+  logger.info('Uploading practitioner avatar');
+
+  try {
+    const { email } = req?.body;
+    console.log('Email:', email);
+    const file = req.file;
+    console.log('File:', file?.originalname);
+
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const bucket = admin.storage().bucket(); // Get a reference to the bucket
+
+    // Generate a unique filename for the avatar
+    const filename = `${uuidv4()}-${file?.originalname}`; // Use UUID to avoid filename conflicts
+    console.log('Filename:', filename);
+
+    // Specify the destination folder (avatars in this case)
+    const destination = `practitioner-avatar/${filename}`;
+    console.log('Destination:', destination);
+
+    // Upload the avatar to Firebase Storage
+    await bucket.file(destination).save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+      public: true, // Make the avatar publicly accessible
+    });
+
+    // Construct the public URL for accessing the uploaded avatar
+    const fileUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    console.log('File URL:', fileUrl);
+
+    // Update the practitioner model with the URL of the uploaded avatar
+    const practitioner = await PractitionerModel.findOneAndUpdate(
+      { email: email },
+      { $set: { avatarUrl: fileUrl } },
+      { new: true }
+    );
+
+    if (!practitioner) {
+      return res.status(404).json({ error: 'Practitioner not found' });
+    }
+
+    // Respond with the URL of the uploaded avatar
+    res.json({ url: fileUrl });
+  } catch (error: any) {
+    console.error('Error uploading avatar:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const uploadAdminAvatar = async (req: Request, res: Response) => {
+  logger.info('Uploading admin avatar');
+
+  try {
+    const { email } = req?.body;
+    console.log('Email:', email);
+    const file = req.file;
+    console.log('File:', file?.originalname);
+
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const bucket = admin.storage().bucket(); // Get a reference to the bucket
+
+    // Generate a unique filename for the avatar
+    const filename: string = `${uuidv4()}-${file?.originalname}`; // Use UUID to avoid filename conflicts
+    console.log('Filename:', filename);
+
+    // Specify the destination folder (avatars in this case)
+    const destination = `admin-avatar/${filename}`;
+    console.log('Destination:', destination);
+
+    // Upload the avatar to Firebase Storage
+    await bucket.file(destination).save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+      public: true, // Make the avatar publicly accessible
+    });
+
+    // Construct the public URL for accessing the uploaded avatar
+    const fileUrl: string = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    console.log('File URL:', fileUrl);
+
+    // Update the admin model with the URL of the uploaded avatar
+    const administrator = await AdminModel.findOneAndUpdate(
+      { email: email },
+      { $set: { avatarUrl: fileUrl } },
+      { new: true }
+    );
+
+    if (!administrator) {
+      return res.status(404).json({ error: 'Admin not found' });
+    }
+
+    // Respond with the URL of the uploaded avatar
+    res.json({ url: fileUrl });
+  } catch (error: any) {
+    console.error('Error uploading avatar:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export {
+  uploadPatientID,
+  uploadPractitionerID,
+  uploadPatientAvatar,
+  uploadPractitionerAvatar,
+  uploadAdminAvatar,
+};
