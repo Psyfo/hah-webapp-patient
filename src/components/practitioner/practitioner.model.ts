@@ -103,10 +103,10 @@ PractitionerSchema.post<IPractitioner>('save', async function (doc) {
         <p>You've just signed up for a Health at Home Practitioner account with this email.</p>
         <p>Click this link to verify your email and continue with registering.</p>
             
-        <a href="${frontEndUrl}/verify/${doc.account.verificationToken}">Verify</a>
+        <a href="${frontEndUrl}/verify-practitioner/${doc.account.verificationToken}">Verify</a>
             
         <p>Having trouble? Copy and paste this link into your browser:</p>
-        <p>"${frontEndUrl}/verify/${doc.account.verificationToken}"</p>
+        <p>"${frontEndUrl}/verify-practitioner/${doc.account.verificationToken}"</p>
             
         <p>Need help?</p>
         <p>FAQ: <a href="${frontEndUrl}/faq">${frontEndUrl}/faq</a></p>

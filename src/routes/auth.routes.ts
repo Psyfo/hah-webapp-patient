@@ -20,5 +20,10 @@ authRouter.post(
   practitionerLogin
 );
 authRouter.get('/verify/:token', LoggerMiddleware.reqLog, verifyEmail);
+authRouter.get(
+  '/verify-practitioner/:token',
+  LoggerMiddleware.reqLog,
+  verifyEmail
+);
 
 export { authRouter };

@@ -114,4 +114,37 @@ const verifyEmail = async (req: Request, res: Response) => {
   }
 };
 
-export { login, practitionerLogin, adminLogin, verifyEmail };
+const verifyPractitionerEmmail = async (req: Request, res: Response) => {
+  const token = req.params.token;
+
+  try {
+    const practitioner = await PractitionerModel.findOne({
+      'account.verificationToken': token,
+    });
+    if (!practitioner) {
+      return res
+        .status(404)
+        .json({ message: 'Practitioner not found or token expired' });
+    }
+
+    practitioner.account.verified = true;
+    practitioner.account.verificationToken = undefined;
+    await practitioner.save();
+
+    logger.info(`User ${practitioner.email} verified successfully`);
+    res.json({
+      message: 'Congratulations! Your email has been verified.',
+    });
+  } catch (error) {
+    console.error('Verification error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export {
+  login,
+  practitionerLogin,
+  adminLogin,
+  verifyEmail,
+  verifyPractitionerEmmail,
+};

@@ -348,17 +348,17 @@ const resendVerificationEmail = async (
         to: practitioner.email,
         subject: 'Health at Home Email Verification',
         html: `    
-              <h1>Health at Home Email Verification</h1>
+              <h1>Health at Home Practitioner Email Verification</h1>
               <h2>Click the link to verify your email</h2>
                   
               <p>Hello!</p>
               <p>You've just signed up for a Health at Home Practitioner account with this email.</p>
               <p>Click this link to verify your email and continue with registering.</p>
                   
-              <a href="${frontEndUrl}/verify/${practitioner.account.verificationToken}">Verify</a>
+              <a href="${frontEndUrl}/verify-practitioner/${practitioner.account.verificationToken}">Verify</a>
                   
               <p>Having trouble? Copy and paste this link into your browser:</p>
-              <p>"${frontEndUrl}/verify/${practitioner.account.verificationToken}"</p>
+              <p>"${frontEndUrl}/verify-practitioner/${practitioner.account.verificationToken}"</p>
                   
               <p>Need help?</p>
               <p>FAQ: <a href="${frontEndUrl}/faq">${frontEndUrl}/faq</a></p>
