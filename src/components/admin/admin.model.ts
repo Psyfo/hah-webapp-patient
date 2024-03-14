@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt';
-import mongoose from 'mongoose';
-import { IAdmin, IAdminAccount } from './admin.interface';
+import bcrypt from "bcrypt";
+import mongoose from "mongoose";
+import { IAdmin, IAdminAccount } from "./admin.interface";
 
 const AdminAccountSchema = new mongoose.Schema<IAdminAccount>(
   {
@@ -24,7 +24,7 @@ const AdminSchema = new mongoose.Schema<IAdmin>(
   {
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    imgUrl: { type: String },
+    avatarUrl: { type: String },
     account: { type: AdminAccountSchema, default: {} },
   },
   {

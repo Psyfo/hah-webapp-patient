@@ -13,7 +13,7 @@ interface IAdmin extends Document {
   email: string;
   password: string;
   dob: Date;
-  imgUrl: string;
+  avatarUrl: string;
   account: IAdminAccount;
 }
 

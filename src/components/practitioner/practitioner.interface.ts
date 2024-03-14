@@ -18,7 +18,8 @@ interface IPractitioner extends Document {
   firstName: string;
   lastName: string;
   dob: Date;
-  imgUrl: string;
+  idUrl: string;
+  avatarUrl: string;
   phoneNumber: string;
   account: IPractitionerAccount;
 }
