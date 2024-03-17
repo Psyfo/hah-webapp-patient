@@ -36,6 +36,7 @@ const PractitionerSchema = new Schema<IPractitioner>(
     password: { type: String, required: true },
     firstName: { type: String },
     lastName: { type: String },
+    idNumber: { type: String, unique: true },
     dob: { type: Date, default: Date.now },
     idUrl: { type: String },
     avatarUrl: { type: String },

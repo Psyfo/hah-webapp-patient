@@ -17,6 +17,7 @@ interface IPatient extends Document {
   password: string;
   firstName: string;
   lastName: string;
+  idNumber: string;
   dob: Date;
   idUrl: string;
   avatarUrl: string;
