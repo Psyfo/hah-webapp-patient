@@ -37,7 +37,7 @@ const patientSchema = new Schema<IPatient>(
     firstName: { type: String },
     lastName: { type: String },
     idNumber: { type: String, unique: true },
-    dob: { type: Date, default: new Date(1900, 0, 1) },
+    dob: { type: Date, default: new Date() },
     idUrl: { type: String },
     avatarUrl: { type: String },
     phoneNumber: { type: String },
