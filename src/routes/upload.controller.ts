@@ -2,9 +2,10 @@ import admin from "firebase-admin";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { AdminModel } from "../components/admin/admin.model";
-import { PatientModel } from "../components/patient/patient.model";
-import { PractitionerModel } from "../components/practitioner/practitioner.model";
-import { logger } from "../config/logger.config";
+import { patientIDUploadEmail } from '../components/mail/mail.controller';
+import { PatientModel } from '../components/patient/patient.model';
+import { PractitionerModel } from '../components/practitioner/practitioner.model';
+import { logger } from '../config/logger.config';
 
 // Initialize Firebase Admin SDK
 const serviceAccountKeyPath =
@@ -60,6 +61,9 @@ const uploadPatientID = async (req: Request, res: Response) => {
     if (!patient) {
       return res.status(404).json({ error: 'Patient not found' });
     }
+
+    // Send email to patient
+    await patientIDUploadEmail(patient);
 
     // Respond with the URL of the uploaded document
     res.json({ url: fileUrl });
@@ -284,6 +288,7 @@ const uploadAdminAvatar = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 export {
   uploadPatientID,
