@@ -6,6 +6,7 @@ interface IPatientAccount extends Document {
   verified: boolean;
   activationStep: number;
   approvalStatus: string;
+  rejectionReason: string;
   country: string;
   accountStatus: string;
   role: string;

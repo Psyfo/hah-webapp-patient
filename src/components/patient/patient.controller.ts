@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import { Request, Response } from 'express';
 import { customAlphabet } from 'nanoid';
 import { logger } from '../../config/logger.config';
+import { patientVerificationEmail } from '../mail/mail.controller';
 import { IPatient } from './patient.interface';
 import { PatientModel } from './patient.model';
 
@@ -320,54 +321,10 @@ const resendVerificationEmail = async (
       // Save the patient with the new verification token
       await patient.save();
 
-      // Reuse the email template and send verification email
-      const transport = nodemailer.createTransport({
-        host: 'smtp.zeptomail.eu',
-        port: 587,
-        auth: {
-          user: 'emailapikey',
-          pass: 'yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==',
-        },
-      });
+      // Call the mail controller method to send the verification email
+      await patientVerificationEmail(patient, verificationToken);
 
-      const mailOptions = {
-        from: '"Hah Team" <noreply@healthathome.co.zw>',
-        to: patient.email,
-        subject: 'Health at Home Email Verification',
-        html: `    
-            <h1>Health at Home Email Verification</h1>
-            <h2>Click the link to verify your email</h2>
-                
-            <p>Hello!</p>
-            <p>You've just signed up for a Health at Home account with this email.</p>
-            <p>Click this link to verify your email and continue with registering.</p>
-                
-            <a href="${frontEndUrl}/verify/${patient.account.verificationToken}">Verify</a>
-                
-            <p>Having trouble? Copy and paste this link into your browser:</p>
-            <p>"${frontEndUrl}/verify/${patient.account.verificationToken}"</p>
-                
-            <p>Need help?</p>
-            <p>FAQ: <a href="${frontEndUrl}/faq">${frontEndUrl}/faq</a></p>
-            <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
-            <p>Phone: +263 780 147 562</p>
-            <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
-            `,
-      };
-
-      // Send the email
-      transport.sendMail(mailOptions, (error: any, info: any) => {
-        if (error) {
-          console.log(error);
-          return res
-            .status(500)
-            .json({ message: 'Failed to send verification email' });
-        }
-        console.log('Successfully sent');
-        return res
-          .status(200)
-          .json({ message: 'Verification email sent successfully' });
-      });
+      res.status(200).json({ message: 'Verification email sent' });
     }
   } catch (error) {
     console.error(error);
