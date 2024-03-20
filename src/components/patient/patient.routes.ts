@@ -10,6 +10,7 @@ import {
   patientExistsByEmail,
   getPatientByEmail,
   resendVerificationEmail,
+  approvePatient,
 } from './patient.controller';
 
 // router for express
@@ -83,5 +84,8 @@ patientRouter.get(
   LoggerMiddleware.reqLog,
   resendVerificationEmail
 );
+
+// Approve a patient
+patientRouter.patch('/approve/:id', LoggerMiddleware.reqLog, approvePatient);
 
 export { patientRouter };

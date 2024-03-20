@@ -2,9 +2,14 @@ import nodemailer from 'nodemailer';
 import { Request, Response } from 'express';
 import { customAlphabet } from 'nanoid';
 import { logger } from '../../config/logger.config';
-import { patientVerificationEmail } from '../mail/mail.controller';
 import { IPatient } from './patient.interface';
 import { PatientModel } from './patient.model';
+
+import {
+  patientIDApprovedEmail,
+  patientIDRejectedEmail,
+  patientVerificationEmail,
+} from '../mail/mail.controller';
 
 // Create a new patient
 const createPatient = async (req: Request, res: Response): Promise<void> => {
@@ -332,6 +337,47 @@ const resendVerificationEmail = async (
   }
 };
 
+const approvePatient = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const patientId = req.params.id;
+    const patientData: IPatient = req.body;
+
+    const updatedPatient = await PatientModel.findByIdAndUpdate(
+      patientId,
+      {
+        'account.approvalStatus': patientData.account.approvalStatus,
+        'account.rejectionReason': patientData.account.rejectionReason,
+      },
+      { new: true }
+    );
+
+    if (!updatedPatient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+
+    // Send mail based on approval status
+    if (patientData.account.approvalStatus === 'approved') {
+      // Send approval email
+      logger.info('Sending approval email');
+      patientIDApprovedEmail(updatedPatient);
+    } else if (patientData.account.approvalStatus === 'rejected') {
+      // Change activation step to 0
+      updatedPatient.account.activationStep = 0;
+      await updatedPatient.save();
+
+      // Send rejection email
+      logger.info('Sending rejection email');
+      patientIDRejectedEmail(updatedPatient);
+    }
+
+    res.status(200).json(updatedPatient);
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(500).json({ error: JSON.stringify(error) });
+  }
+};
+
 export {
   createPatient,
   getAllPatients,
@@ -348,4 +394,5 @@ export {
   blockPatientByEmail,
   patientExistsByEmail,
   resendVerificationEmail,
+  approvePatient,
 };

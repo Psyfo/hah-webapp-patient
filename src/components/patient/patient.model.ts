@@ -13,7 +13,7 @@ const patientAccountSchema = new Schema<IPatientAccount>(
     activationStep: { type: Number, default: 0 },
     approvalStatus: {
       type: String,
-      enum: ['pending', 'approved'],
+      enum: ['pending', 'approved', 'rejected'],
       default: 'pending',
     },
     rejectionReason: { type: String, default: '' },
