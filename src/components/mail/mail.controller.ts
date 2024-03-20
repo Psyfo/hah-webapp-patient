@@ -146,7 +146,7 @@ const patientIDRejectedEmail = async (patient: IPatient) => {
           },
         },
       ],
-      merge_info: { rejectReason: 'rejectReason_value' },
+      merge_info: { rejectReason: patient.account.rejectionReason },
       subject: 'Test Email',
     })
     .then((response: any) => console.log('Patient ID rejected email sent'))
