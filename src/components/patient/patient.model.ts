@@ -10,6 +10,7 @@ const patientAccountSchema = new Schema<IPatientAccount>(
     verified: { type: Boolean, default: false },
     verificationToken: { type: String, default: '' },
     firstVerificationEmailSent: { type: Boolean, default: false },
+    passwordResetToken: { type: String, default: '' },
     activationStep: { type: Number, default: 0 },
     approvalStatus: {
       type: String,

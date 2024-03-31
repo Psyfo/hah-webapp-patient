@@ -8,6 +8,7 @@ import { PatientModel } from './patient.model';
 import {
   patientIDApprovedEmail,
   patientIDRejectedEmail,
+  patientPasswordResetEmail,
   patientVerificationEmail,
 } from '../mail/mail.controller';
 
@@ -378,6 +379,42 @@ const approvePatient = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+
+    // Find the patient by email
+    const patient = await PatientModel.findOne({
+      email,
+    });
+
+    if (!patient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+
+    // Regenerate the password reset token
+    const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
+    const passwordResetToken = nanoid();
+    logger.info(`Current patient: ${JSON.stringify(patient)}`);
+    patient.account.passwordResetToken = passwordResetToken;
+    logger.info(`New password reset token issued: ${passwordResetToken}`);
+
+    // Save the patient with the new password reset token
+    await patient.save();
+
+    // Call the mail controller method to send the password reset email
+    await patientPasswordResetEmail(patient, passwordResetToken);
+
+    res.status(200).json({ message: 'Password reset email sent' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const resetPassword = async (req: Request, res: Response): Promise<void> => {};
+
 export {
   createPatient,
   getAllPatients,
@@ -395,4 +432,6 @@ export {
   patientExistsByEmail,
   resendVerificationEmail,
   approvePatient,
+  forgotPassword,
+  resetPassword,
 };

@@ -88,4 +88,10 @@ patientRouter.get(
 // Approve a patient
 patientRouter.patch('/approve/:id', LoggerMiddleware.reqLog, approvePatient);
 
+// Forgot password
+patientRouter.post('/forgot-password', LoggerMiddleware.reqLog, updatePatientById);
+
+// Reset password
+patientRouter.post('/reset-password', LoggerMiddleware.reqLog, updatePatientById);
+
 export { patientRouter };
