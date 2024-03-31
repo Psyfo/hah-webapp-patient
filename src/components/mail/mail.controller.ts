@@ -155,9 +155,232 @@ const patientIDRejectedEmail = async (patient: IPatient) => {
     );
 };
 
+const patientPasswordResetEmail = async (
+  patient: IPatient,
+  passwordResetToken: string
+) => {
+  const frontEndUrl: string | undefined =
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
+
+  const url = 'api.zeptomail.eu/v1.1/email/template';
+  const token =
+    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+
+  let client = new SendMailClient({ url, token });
+
+  client
+    .sendMail({
+      mail_template_key:
+        '13ef.41cbf9823b7248c1.k1.edec0d10-ec21-11ee-aed2-52540063e0e7.18e7f61c061',
+      from: {
+        address: 'noreply@healthathome.co.zw',
+        name: 'noreply',
+      },
+      to: [
+        {
+          email_address: {
+            address: patient.email,
+            name: `${patient.firstName} ${patient.lastName}`,
+          },
+        },
+      ],
+      merge_info: {
+        frontEndUrl: frontEndUrl,
+        resetToken: passwordResetToken,
+      },
+      subject: 'Test Email',
+    })
+    .then((response: any) => console.log('success'))
+    .catch((error: any) => console.log(error, 'error'));
+};
+
+const practitionerVerificationEmail = async (
+  practitioner: IPractitioner,
+  verificationToken: string
+) => {
+  const frontEndUrl: string | undefined =
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
+
+  const url = 'api.zeptomail.eu/v1.1/email/template';
+  const token =
+    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+
+  let client = new SendMailClient({ url, token });
+
+  client
+    .sendMail({
+      mail_template_key:
+        '13ef.41cbf9823b7248c1.k1.2e83c220-ef90-11ee-86da-52540063e0e7.18e95dd7742',
+      from: {
+        address: 'noreply@healthathome.co.zw',
+        name: 'noreply',
+      },
+      to: [
+        {
+          email_address: {
+            address: practitioner.email,
+            name: `${practitioner.firstName} ${practitioner.lastName}`,
+          },
+        },
+      ],
+      merge_info: {
+        frontEndUrl: frontEndUrl,
+        verificationToken: verificationToken,
+        url: frontEndUrl,
+      },
+      subject: 'Test Email',
+    })
+    .then((response: any) => console.log('success'))
+    .catch((error: any) => console.log(error, 'error'));
+};
+
+const practitionerIDUploadEmail = async (practitioner: IPractitioner) => {
+  const url = 'api.zeptomail.eu/v1.1/email/template';
+  const token =
+    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+
+  let client = new SendMailClient({ url, token });
+
+  client
+    .sendMail({
+      mail_template_key:
+        '13ef.41cbf9823b7248c1.k1.ad899c70-ef90-11ee-86da-52540063e0e7.18e95e0b7b7',
+      from: {
+        address: 'noreply@healthathome.co.zw',
+        name: 'noreply',
+      },
+      to: [
+        {
+          email_address: {
+            address: practitioner.email,
+            name: `${practitioner.firstName} ${practitioner.lastName}`,
+          },
+        },
+      ],
+      merge_info: {
+        firstName: practitioner.firstName,
+        lastName: practitioner.lastName,
+        phoneNumber: practitioner.phoneNumber,
+        dob: moment(practitioner.dob).format('DD-MM-YYYY'),
+        idNumber: practitioner.idNumber,
+      },
+      subject: 'Test Email',
+    })
+    .then((response: any) => console.log('success'))
+    .catch((error: any) => console.log(error, 'error'));
+};
+
+const practitionerIDApprovedEmail = async (practitioner: IPractitioner) => {
+  const url = 'api.zeptomail.eu/v1.1/email/template';
+  const token =
+    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+
+  let client = new SendMailClient({ url, token });
+
+  client
+    .sendMail({
+      mail_template_key:
+        '13ef.41cbf9823b7248c1.k1.e155b150-ef91-11ee-86da-52540063e0e7.18e95e898e5',
+      from: {
+        address: 'noreply@healthathome.co.zw',
+        name: 'noreply',
+      },
+      to: [
+        {
+          email_address: {
+            address: practitioner.email,
+            name: `${practitioner.firstName} ${practitioner.lastName}`,
+          },
+        },
+      ],
+      merge_info: { firstName: practitioner.firstName },
+      subject: 'Test Email',
+    })
+    .then((response: any) => console.log('success'))
+    .catch((error: any) => console.log(error, 'error'));
+};
+
+const practitionerIDRejectedEmail = async (practitioner: IPractitioner) => {
+  const url = 'api.zeptomail.eu/v1.1/email/template';
+  const token =
+    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+
+  let client = new SendMailClient({ url, token });
+
+  client
+    .sendMail({
+      mail_template_key:
+        '13ef.41cbf9823b7248c1.k1.66703f40-ef92-11ee-86da-52540063e0e7.18e95ec0134',
+      from: {
+        address: 'noreply@healthathome.co.zw',
+        name: 'noreply',
+      },
+      to: [
+        {
+          email_address: {
+            address: practitioner.email,
+            name: `${practitioner.firstName} ${practitioner.lastName}`,
+          },
+        },
+      ],
+      merge_info: { rejectionReason: practitioner.account.rejectionReason },
+      subject: 'Test Email',
+    })
+    .then((response: any) => console.log('success'))
+    .catch((error: any) => console.log(error, 'error'));
+};
+
+const practitionerPasswordResetEmail = async (
+  practitioner: IPractitioner,
+  passwordResetToken: string
+) => {
+  const frontEndUrl: string | undefined =
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
+
+  const url = 'api.zeptomail.eu/v1.1/email/template';
+  const token =
+    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+
+  let client = new SendMailClient({ url, token });
+
+  client
+    .sendMail({
+      mail_template_key:
+        '13ef.41cbf9823b7248c1.k1.8c6a3b60-ef92-11ee-86da-52540063e0e7.18e95ecfa16',
+      from: {
+        address: 'noreply@healthathome.co.zw',
+        name: 'noreply',
+      },
+      to: [
+        {
+          email_address: {
+            address: practitioner.email,
+            name: `${practitioner.firstName} ${practitioner.lastName}`,
+          },
+        },
+      ],
+      merge_info: { frontEndUrl: frontEndUrl, resetToken: passwordResetToken },
+      subject: 'Test Email',
+    })
+    .then((response: any) => console.log('success'))
+    .catch((error: any) => console.log(error, 'error'));
+};
+
 export {
   patientVerificationEmail,
   patientIDUploadEmail,
   patientIDApprovedEmail,
   patientIDRejectedEmail,
+  patientPasswordResetEmail,
+  practitionerVerificationEmail,
+  practitionerIDUploadEmail,
+  practitionerIDApprovedEmail,
+  practitionerIDRejectedEmail,
+  practitionerPasswordResetEmail,
 };
