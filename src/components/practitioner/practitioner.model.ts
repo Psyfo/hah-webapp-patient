@@ -16,6 +16,7 @@ const PractitionerAccountSchema = new Schema<IPractitionerAccount>(
       enum: ['pending', 'approved'],
       default: 'pending',
     },
+    rejectionReason: { type: String, default: '' },
     country: { type: String, default: 'ZW' },
     accountStatus: {
       type: String,
