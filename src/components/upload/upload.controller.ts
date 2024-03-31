@@ -1,11 +1,11 @@
-import admin from "firebase-admin";
-import { Request, Response } from "express";
-import { v4 as uuidv4 } from "uuid";
-import { AdminModel } from "../components/admin/admin.model";
-import { patientIDUploadEmail } from '../components/mail/mail.controller';
-import { PatientModel } from '../components/patient/patient.model';
-import { PractitionerModel } from '../components/practitioner/practitioner.model';
-import { logger } from '../config/logger.config';
+import admin from 'firebase-admin';
+import { Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { logger } from '../../config/logger.config';
+import { AdminModel } from '../admin/admin.model';
+import { patientIDUploadEmail } from '../mail/mail.controller';
+import { PatientModel } from '../patient/patient.model';
+import { PractitionerModel } from '../practitioner/practitioner.model';
 
 // Initialize Firebase Admin SDK
 const serviceAccountKeyPath =
@@ -288,7 +288,6 @@ const uploadAdminAvatar = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 export {
   uploadPatientID,

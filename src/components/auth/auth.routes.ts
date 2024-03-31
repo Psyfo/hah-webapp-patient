@@ -1,5 +1,5 @@
-import express, { Router } from "express";
-import { LoggerMiddleware } from "../middleware/logger.middleware";
+import express, { Router } from 'express';
+import { LoggerMiddleware } from '../../middleware/logger.middleware';
 
 import {
   adminLogin,

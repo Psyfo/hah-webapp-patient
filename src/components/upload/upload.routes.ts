@@ -1,6 +1,6 @@
-import multer from "multer";
-import { Router } from "express";
-import { LoggerMiddleware } from "../middleware/logger.middleware";
+import multer from 'multer';
+import { Router } from 'express';
+import { LoggerMiddleware } from '../../middleware/logger.middleware';
 
 import {
   uploadPatientID,

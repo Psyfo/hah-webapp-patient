@@ -1,11 +1,11 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
-import { AdminModel } from "../components/admin/admin.model";
-import { IPatient } from "../components/patient/patient.interface";
-import { PatientModel } from "../components/patient/patient.model";
-import { PractitionerModel } from "../components/practitioner/practitioner.model";
-import { logger } from "../config/logger.config";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Request, Response } from 'express';
+import { logger } from '../../config/logger.config';
+import { AdminModel } from '../admin/admin.model';
+import { IPatient } from '../patient/patient.interface';
+import { PatientModel } from '../patient/patient.model';
+import { PractitionerModel } from '../practitioner/practitioner.model';
 
 // Patient login
 const login = async (req: Request, res: Response) => {
