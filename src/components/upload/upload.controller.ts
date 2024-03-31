@@ -66,7 +66,7 @@ const uploadPatientID = async (req: Request, res: Response) => {
     await patientIDUploadEmail(patient);
 
     // Respond with the URL of the uploaded document
-    res.json({ url: fileUrl });
+    res.status(200).json({ url: fileUrl });
   } catch (error: any) {
     console.error('Error uploading document:', error.message);
     res.status(500).json({ error: error.message });
@@ -119,8 +119,11 @@ const uploadPractitionerID = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Practitioner not found' });
     }
 
+    // Send email to practitioner
+    await patientIDUploadEmail(practitioner);
+
     // Respond with the URL of the uploaded document
-    res.json({ url: fileUrl });
+    res.status(200).json({ url: fileUrl });
   } catch (error: any) {
     console.error('Error uploading document:', error.message);
     res.status(500).json({ error: error.message });
@@ -174,7 +177,7 @@ const uploadPatientAvatar = async (req: Request, res: Response) => {
     }
 
     // Respond with the URL of the uploaded avatar
-    res.json({ url: fileUrl });
+    res.status(200).json({ url: fileUrl });
   } catch (error: any) {
     console.error('Error uploading avatar:', error.message);
     res.status(500).json({ error: error.message });
@@ -228,7 +231,7 @@ const uploadPractitionerAvatar = async (req: Request, res: Response) => {
     }
 
     // Respond with the URL of the uploaded avatar
-    res.json({ url: fileUrl });
+    res.status(200).json({ url: fileUrl });
   } catch (error: any) {
     console.error('Error uploading avatar:', error.message);
     res.status(500).json({ error: error.message });
@@ -282,7 +285,7 @@ const uploadAdminAvatar = async (req: Request, res: Response) => {
     }
 
     // Respond with the URL of the uploaded avatar
-    res.json({ url: fileUrl });
+    res.status(200).json({ url: fileUrl });
   } catch (error: any) {
     console.error('Error uploading avatar:', error.message);
     res.status(500).json({ error: error.message });
