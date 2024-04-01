@@ -292,10 +292,65 @@ const uploadAdminAvatar = async (req: Request, res: Response) => {
   }
 };
 
+const uploadPractitionerQualification = async (req: Request, res: Response) => {
+  logger.info('Uploading practitioner qualification');
+
+  try {
+    const { email } = req?.body;
+    console.log('Email:', email);
+    const file = req.file;
+    console.log('File:', file?.originalname);
+
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const bucket = admin.storage().bucket(); // Get a reference to the bucket
+
+    // Generate a unique filename for the qualification
+    const filename = `${uuidv4()}-${file?.originalname}`; // Use UUID to avoid filename conflicts
+    console.log('Filename:', filename);
+
+    // Specify the destination folder (qualifications in this case)
+    const destination = `practitioner-qualification/${filename}`;
+    console.log('Destination:', destination);
+
+    // Upload the qualification to Firebase Storage
+    await bucket.file(destination).save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+      public: true, // Make the qualification publicly accessible
+    });
+
+    // Construct the public URL for accessing the uploaded qualification
+    const fileUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    console.log('File URL:', fileUrl);
+
+    // Update the practitioner model with the URL of the uploaded qualification
+    const practitioner = await PractitionerModel.findOneAndUpdate(
+      { email: email },
+      { $set: { qualificationUrl: fileUrl } },
+      { new: true }
+    );
+
+    if (!practitioner) {
+      return res.status(404).json({ error: 'Practitioner not found' });
+    }
+
+    // Respond with the URL of the uploaded qualification
+    res.status(200).json({ url: fileUrl });
+  } catch (error: any) {
+    console.error('Error uploading qualification:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export {
   uploadPatientID,
   uploadPractitionerID,
   uploadPatientAvatar,
   uploadPractitionerAvatar,
   uploadAdminAvatar,
+  uploadPractitionerQualification,
 };
