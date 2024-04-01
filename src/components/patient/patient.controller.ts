@@ -300,6 +300,8 @@ const resendVerificationEmail = async (
   const frontEndUrl: string | undefined =
     process.env.NODE_ENV === 'production'
       ? process.env.FRONTEND_PROD_URL
+      : process.env.NODE_ENV === 'staging'
+      ? process.env.FRONTEND_STAGING_URL
       : process.env.FRONTEND_DEV_URL;
 
   try {

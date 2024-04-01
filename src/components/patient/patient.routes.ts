@@ -11,6 +11,8 @@ import {
   getPatientByEmail,
   resendVerificationEmail,
   approvePatient,
+  forgotPassword,
+  resetPassword,
 } from './patient.controller';
 
 // router for express
@@ -89,9 +91,9 @@ patientRouter.get(
 patientRouter.patch('/approve/:id', LoggerMiddleware.reqLog, approvePatient);
 
 // Forgot password
-patientRouter.post('/forgot-password', LoggerMiddleware.reqLog, updatePatientById);
+patientRouter.post('/forgot-password', LoggerMiddleware.reqLog, forgotPassword);
 
 // Reset password
-patientRouter.post('/reset-password', LoggerMiddleware.reqLog, updatePatientById);
+patientRouter.post('/reset-password', LoggerMiddleware.reqLog, resetPassword);
 
 export { patientRouter };

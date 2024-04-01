@@ -10,6 +10,8 @@ import {
   practitionerExistsByEmail,
   getPractitionerByEmail,
   resendVerificationEmail,
+  forgotPassword,
+  resetPassword,
 } from './practitioner.controller';
 
 // router for express
@@ -102,6 +104,20 @@ practitionerRouter.get(
   '/resend-verification/:email',
   LoggerMiddleware.reqLog,
   resendVerificationEmail
+);
+
+// Forgot password
+practitionerRouter.get(
+  '/forgot-password',
+  LoggerMiddleware.reqLog,
+  forgotPassword
+);
+
+// Reset password
+practitionerRouter.get(
+  '/reset-password',
+  LoggerMiddleware.reqLog,
+  resetPassword
 );
 
 export { practitionerRouter };

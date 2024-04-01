@@ -2,8 +2,9 @@ import nodemailer from "nodemailer";
 import { Request, Response } from "express";
 import { customAlphabet } from "nanoid";
 import { logger } from "../../config/logger.config";
-import { IPractitioner } from "./practitioner.interface";
-import { PractitionerModel } from "./practitioner.model";
+import { practitionerPasswordResetEmail } from '../mail/mail.controller';
+import { IPractitioner } from './practitioner.interface';
+import { PractitionerModel } from './practitioner.model';
 
 // Create a new practitioner
 const createPractitioner = async (
@@ -388,6 +389,41 @@ const resendVerificationEmail = async (
   }
 };
 
+const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  console.log('Forgot password request received');
+  try {
+    const { email } = req.body;
+
+    // Find the practitioner by email
+    const practitioner = await PractitionerModel.findOne({ email });
+
+    if (!practitioner) {
+      res.status(404).json({ error: 'Practitioner not found' });
+      return;
+    }
+
+    // Regenerate the password reset token
+    const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
+    const passwordResetToken = nanoid();
+    logger.info(`Current practitioner: ${practitioner}`);
+    practitioner.account.passwordResetToken = passwordResetToken;
+    logger.info(`New password reset token issued: ${passwordResetToken}`);
+
+    // Save the practitioner with the new password reset token
+    await practitioner.save();
+
+    // Call the mail controller method to send the password reset email
+    await practitionerPasswordResetEmail(practitioner, passwordResetToken);
+
+    res.status(200).json({ message: 'Password reset email sent' });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const resetPassword = async (req: Request, res: Response): Promise<void> => {};
+
 export {
   createPractitioner,
   getAllPractitioners,
@@ -404,4 +440,6 @@ export {
   blockPractitionerByEmail,
   practitionerExistsByEmail,
   resendVerificationEmail,
+  forgotPassword,
+  resetPassword,
 };
