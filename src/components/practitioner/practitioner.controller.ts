@@ -2,12 +2,13 @@ import nodemailer from "nodemailer";
 import { Request, Response } from "express";
 import { customAlphabet } from "nanoid";
 import { logger } from "../../config/logger.config";
+import { IPractitioner } from './practitioner.interface';
+import { PractitionerModel } from './practitioner.model';
+
 import {
   practitionerPasswordResetEmail,
   practitionerVerificationEmail,
 } from '../mail/mail.controller';
-import { IPractitioner } from './practitioner.interface';
-import { PractitionerModel } from './practitioner.model';
 
 // Create a new practitioner
 const createPractitioner = async (
@@ -332,7 +333,7 @@ const resendVerificationEmail = async (
       // Regenerate the verification token
       const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
       const verificationToken = nanoid();
-      logger.info(`Current practitioner: ${JSON.stringify(practitioner)}`);
+      //logger.info(`Current practitioner: ${JSON.stringify(practitioner)}`);
       practitioner.account.verificationToken = verificationToken;
       logger.info(`New verification token issued: ${verificationToken}`);
 

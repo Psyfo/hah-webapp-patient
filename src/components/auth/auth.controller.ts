@@ -1,11 +1,11 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
-import { logger } from '../../config/logger.config';
-import { AdminModel } from '../admin/admin.model';
-import { IPatient } from '../patient/patient.interface';
-import { PatientModel } from '../patient/patient.model';
-import { PractitionerModel } from '../practitioner/practitioner.model';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
+import { logger } from "../../config/logger.config";
+import { AdminModel } from "../admin/admin.model";
+import { IPatient } from "../patient/patient.interface";
+import { PatientModel } from "../patient/patient.model";
+import { PractitionerModel } from "../practitioner/practitioner.model";
 
 // Patient login
 const login = async (req: Request, res: Response) => {
@@ -114,8 +114,9 @@ const verifyEmail = async (req: Request, res: Response) => {
   }
 };
 
-const verifyPractitionerEmmail = async (req: Request, res: Response) => {
+const verifyPractitionerEmail = async (req: Request, res: Response) => {
   const token = req.params.token;
+  console.log(`Verifying practitioner email with token: ${token}`);
 
   try {
     const practitioner = await PractitionerModel.findOne({
@@ -146,5 +147,5 @@ export {
   practitionerLogin,
   adminLogin,
   verifyEmail,
-  verifyPractitionerEmmail,
+  verifyPractitionerEmail,
 };

@@ -6,6 +6,7 @@ import {
   login,
   practitionerLogin,
   verifyEmail,
+  verifyPractitionerEmail,
 } from './auth.controller';
 
 // auth.routes.ts
@@ -23,7 +24,7 @@ authRouter.get('/verify/:token', LoggerMiddleware.reqLog, verifyEmail);
 authRouter.get(
   '/verify-practitioner/:token',
   LoggerMiddleware.reqLog,
-  verifyEmail
+  verifyPractitionerEmail
 );
 
 export { authRouter };
