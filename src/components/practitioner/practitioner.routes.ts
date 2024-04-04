@@ -12,6 +12,7 @@ import {
   resendVerificationEmail,
   forgotPassword,
   resetPassword,
+  approvePractitioner,
 } from './practitioner.controller';
 
 // router for express
@@ -106,15 +107,21 @@ practitionerRouter.get(
   resendVerificationEmail
 );
 
+practitionerRouter.patch(
+  '/approve/:id',
+  LoggerMiddleware.reqLog,
+  approvePractitioner
+);
+
 // Forgot password
-practitionerRouter.get(
+practitionerRouter.post(
   '/forgot-password',
   LoggerMiddleware.reqLog,
   forgotPassword
 );
 
 // Reset password
-practitionerRouter.get(
+practitionerRouter.post(
   '/reset-password',
   LoggerMiddleware.reqLog,
   resetPassword
