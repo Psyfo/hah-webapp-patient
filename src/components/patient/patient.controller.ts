@@ -398,7 +398,6 @@ const forgotPassword = async (req: Request, res: Response): Promise<void> => {
     // Regenerate the password reset token
     const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
     const passwordResetToken = nanoid();
-    logger.info(`Current patient: ${JSON.stringify(patient)}`);
     patient.account.passwordResetToken = passwordResetToken;
     logger.info(`New password reset token issued: ${passwordResetToken}`);
 
@@ -415,7 +414,49 @@ const forgotPassword = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const resetPassword = async (req: Request, res: Response): Promise<void> => {};
+const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { passwordResetToken, newPassword } = req.body;
+
+    console.log('Password Reset Token: ', passwordResetToken);
+    console.log('New Password: ', newPassword);
+
+    // Validate the password reset token and new password
+    if (!passwordResetToken || !newPassword) {
+      res
+        .status(400)
+        .json({ error: 'Password reset token and new password are required' });
+      return;
+    }
+
+    // Find the patient by passwordToken
+    const patient = await PatientModel.findOne({
+      'account.passwordResetToken': passwordResetToken,
+    });
+
+    // Check if the patient exists
+    if (!patient) {
+      res.status(404).json({ error: 'Patient not found' });
+      return;
+    }
+    logger.info(`Patient: ${JSON.stringify(patient)}`);
+
+    // Update the password
+    patient.password = newPassword;
+
+    // Clear the password reset token
+    patient.account.passwordResetToken = '';
+
+    // Save the patient with the new password
+    await patient.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error: any) {
+    console.error(error.message);
+    logger.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 export {
   createPatient,
