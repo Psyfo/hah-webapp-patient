@@ -307,6 +307,8 @@ const resendVerificationEmail = async (
   const frontEndUrl: string | undefined =
     process.env.NODE_ENV === 'production'
       ? process.env.FRONTEND_PROD_URL
+      : process.env.NODE_ENV === 'staging'
+      ? process.env.FRONTEND_STAGING_URL
       : process.env.FRONTEND_DEV_URL;
 
   try {
@@ -389,10 +391,16 @@ const resendVerificationEmail = async (
   }
 };
 
+const approvePractitioner = async (
+  req: Request,
+  res: Response
+): Promise<void> => {};
+
 const forgotPassword = async (req: Request, res: Response): Promise<void> => {
   console.log('Forgot password request received');
+
   try {
-    const { email } = req.body;
+    const email = req.body.email;
 
     // Find the practitioner by email
     const practitioner = await PractitionerModel.findOne({ email });
@@ -422,7 +430,37 @@ const forgotPassword = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const resetPassword = async (req: Request, res: Response): Promise<void> => {};
+const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { passwordResetToken, newPassword } = req.body;
+
+    // Find the patient by passwordToken
+    const practitioner = await PractitionerModel.findOne({
+      'account.passwordResetToken': passwordResetToken,
+    });
+
+    // Check if the practitioner exists
+    if (!practitioner) {
+      res.status(404).json({ error: 'Practitioner not found' });
+      return;
+    }
+
+    // Update the password
+    practitioner.password = newPassword;
+
+    // Clear the password reset token
+    practitioner.account.passwordResetToken = '';
+
+    // Save the practitioner with the new password
+    await practitioner.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error: any) {
+    console.error(error.message);
+    logger.error(error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 export {
   createPractitioner,
@@ -440,6 +478,7 @@ export {
   blockPractitionerByEmail,
   practitionerExistsByEmail,
   resendVerificationEmail,
+  approvePractitioner,
   forgotPassword,
   resetPassword,
 };
