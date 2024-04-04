@@ -20,6 +20,7 @@ interface IPractitioner extends Document {
   firstName: string;
   lastName: string;
   idNumber: string;
+  medicalLicenseNumber: string;
   dob: Date;
   idUrl: string;
   avatarUrl: string;
