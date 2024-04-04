@@ -9,11 +9,9 @@ const patientVerificationEmail = async (
   verificationToken: string | undefined
 ) => {
   const frontEndUrl: string | undefined =
-  process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_PROD_URL
-    : process.env.NODE_ENV === 'staging'
-    ? process.env.FRONTEND_STAGING_URL
-    : process.env.FRONTEND_DEV_URL;
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
 
   console.log('Patient being mailed: ', patient.email);
   console.log('Verification token: ', verificationToken);
@@ -148,7 +146,7 @@ const patientIDRejectedEmail = async (patient: IPatient) => {
           },
         },
       ],
-      merge_info: { rejectReason: patient.account.rejectionReason },
+      merge_info: { rejectionReason: patient.account.rejectionReason },
       subject: 'Test Email',
     })
     .then((response: any) => console.log('Patient ID rejected email sent'))
@@ -162,11 +160,9 @@ const patientPasswordResetEmail = async (
   passwordResetToken: string
 ) => {
   const frontEndUrl: string | undefined =
-  process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_PROD_URL
-    : process.env.NODE_ENV === 'staging'
-    ? process.env.FRONTEND_STAGING_URL
-    : process.env.FRONTEND_DEV_URL;
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
 
   const url = 'api.zeptomail.eu/v1.1/email/template';
   const token =
@@ -205,11 +201,9 @@ const practitionerVerificationEmail = async (
   verificationToken: string
 ) => {
   const frontEndUrl: string | undefined =
-  process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_PROD_URL
-    : process.env.NODE_ENV === 'staging'
-    ? process.env.FRONTEND_STAGING_URL
-    : process.env.FRONTEND_DEV_URL;
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
 
   const url = 'api.zeptomail.eu/v1.1/email/template';
   const token =
@@ -345,11 +339,9 @@ const practitionerPasswordResetEmail = async (
   passwordResetToken: string
 ) => {
   const frontEndUrl: string | undefined =
-  process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_PROD_URL
-    : process.env.NODE_ENV === 'staging'
-    ? process.env.FRONTEND_STAGING_URL
-    : process.env.FRONTEND_DEV_URL;
+    process.env.NODE_ENV === 'production'
+      ? process.env.FRONTEND_PROD_URL
+      : process.env.FRONTEND_DEV_URL;
 
   const url = 'api.zeptomail.eu/v1.1/email/template';
   const token =
