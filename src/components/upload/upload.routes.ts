@@ -8,6 +8,7 @@ import {
   uploadPatientAvatar,
   uploadPractitionerAvatar,
   uploadAdminAvatar,
+  uploadPractitionerQualification,
 } from './upload.controller';
 
 const uploadRouter = Router();
@@ -46,7 +47,7 @@ uploadRouter.post('/admin-avatar', upload.single('file'), uploadAdminAvatar);
 uploadRouter.post(
   '/practitioner-qualification',
   upload.single('file'),
-  uploadAdminAvatar
+  uploadPractitionerQualification
 );
 
 export { uploadRouter };
