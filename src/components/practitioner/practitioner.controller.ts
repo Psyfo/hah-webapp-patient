@@ -320,10 +320,13 @@ const resendVerificationEmail = async (
     const { email } = req.params;
 
     // Find the practitioner by email
-    const practitioner = await PractitionerModel.findOne({ email });
+    const practitioner = await PractitionerModel.findOne({
+      email,
+    });
 
     // If practitioner doesn't exist or is already verified, return an error
     if (!practitioner || practitioner.account.verified) {
+      console.log('Practitioner not found or already verified');
       res
         .status(400)
         .json({ message: 'Practitioner not found or already verified' });
@@ -333,7 +336,6 @@ const resendVerificationEmail = async (
       // Regenerate the verification token
       const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
       const verificationToken = nanoid();
-      //logger.info(`Current practitioner: ${JSON.stringify(practitioner)}`);
       practitioner.account.verificationToken = verificationToken;
       logger.info(`New verification token issued: ${verificationToken}`);
 
@@ -342,12 +344,12 @@ const resendVerificationEmail = async (
 
       // Call the mail controller method to send the verification email
       await practitionerVerificationEmail(practitioner, verificationToken);
-
-      res.status(200).json({ message: 'Verification email sent' });
     }
-  } catch (error) {
+
+    res.status(200).json({ message: 'Verification email sent' });
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: error.message || 'Internal server error' });
   }
 };
 
