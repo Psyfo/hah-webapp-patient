@@ -3,9 +3,10 @@ import mongoose, { Schema, model } from "mongoose";
 import nodemailer from "nodemailer";
 import { customAlphabet } from "nanoid";
 import { logger } from "../../config/logger.config";
+import { practitionerVerificationEmail } from "../mail/mail.controller";
 import { IPractitioner, IPractitionerAccount } from "./practitioner.interface";
 
-const PractitionerAccountSchema = new Schema<IPractitionerAccount>(
+const practitionerAccountSchema = new Schema<IPractitionerAccount>(
   {
     verified: { type: Boolean, default: false },
     verificationToken: { type: String, default: '' },
@@ -32,7 +33,7 @@ const PractitionerAccountSchema = new Schema<IPractitionerAccount>(
   }
 );
 
-const PractitionerSchema = new Schema<IPractitioner>(
+const practitionerSchema = new Schema<IPractitioner>(
   {
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
@@ -43,8 +44,9 @@ const PractitionerSchema = new Schema<IPractitioner>(
     dob: { type: Date, default: Date.now },
     idUrl: { type: String },
     avatarUrl: { type: String },
+    qualificationUrl: { type: String },
     phoneNumber: { type: String },
-    account: { type: PractitionerAccountSchema, default: {} },
+    account: { type: practitionerAccountSchema, default: {} },
   },
   {
     timestamps: true,
@@ -53,85 +55,47 @@ const PractitionerSchema = new Schema<IPractitioner>(
   }
 );
 
-// Hash password before saving to database
-PractitionerSchema.pre<IPractitioner>('save', async function (next) {
-  const Practitioner = this;
+// Define PRE save middleware to hash the password before saving
+practitionerSchema.pre<IPractitioner>('save', async function (next) {
+  const practitioner = this;
 
-  if (!Practitioner.isModified('password')) {
+  if (!practitioner.isModified('password')) {
     return next();
   }
 
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(Practitioner.password, salt);
+  const hashedPassword = await bcrypt.hash(practitioner.password, salt);
 
-  Practitioner.password = hashedPassword;
+  practitioner.password = hashedPassword;
 
   // Generate verification token
   const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
   const verificationToken = nanoid();
-  Practitioner.account.verificationToken = verificationToken;
+  practitioner.account.verificationToken = verificationToken;
 
   next();
 });
 
 // Define post save middleware to trigger webhook after Practitioner creation
-PractitionerSchema.post<IPractitioner>('save', async function (doc) {
-  const frontEndUrl: string | undefined =
-    process.env.NODE_ENV === 'production'
-      ? process.env.FRONTEND_PROD_URL
-      : process.env.FRONTEND_DEV_URL;
-
+practitionerSchema.post<IPractitioner>('save', async function (doc) {
   if (doc.account.firstVerificationEmailSent) {
     return;
   }
 
-  logger.info('Sending verification email');
-  var transport = nodemailer.createTransport({
-    host: 'smtp.zeptomail.eu',
-    port: 587,
-    auth: {
-      user: 'emailapikey',
-      pass: 'yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==',
-    },
-  });
+  // Save the doc with the new verification token
+  await doc.save();
 
-  var mailOptions = {
-    from: '"Hah Team" <noreply@healthathome.co.zw>',
-    to: doc.email,
-    subject: 'Health at Home Email Verification',
-    html: `    
-        <h1>Health at Home Email Verification</h1>
-        <h2>Click the link to verify your email</h2>
-            
-        <p>Hello!</p>
-        <p>You've just signed up for a Health at Home Practitioner account with this email.</p>
-        <p>Click this link to verify your email and continue with registering.</p>
-            
-        <a href="${frontEndUrl}/verify-practitioner/${doc.account.verificationToken}">Verify</a>
-            
-        <p>Having trouble? Copy and paste this link into your browser:</p>
-        <p>"${frontEndUrl}/verify-practitioner/${doc.account.verificationToken}"</p>
-            
-        <p>Need help?</p>
-        <p>FAQ: <a href="${frontEndUrl}/faq">${frontEndUrl}/faq</a></p>
-        <p>Email: <a href="mailto:hello@healthathome.co.zw">hello@healthathome.co.zw</a></p>
-        <p>Phone: +263 780 147 562</p>
-        <p>Working hours: Monday - Friday, 9:00am - 5:00pm</p>
-        `,
-  };
-
-  transport.sendMail(mailOptions, (error: any, info: any) => {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Successfully sent');
-  });
+  // Call the mail controller method to send the verification email
+  await practitionerVerificationEmail(doc, doc.account.verificationToken);
 
   // Set firstVerificationEmailSent to true
   doc.account.firstVerificationEmailSent = true;
-  doc.save();
+  await doc.save();
 });
 
-const PractitionerModel = model<IPractitioner>('Practitioner', PractitionerSchema);
+const PractitionerModel = model<IPractitioner>(
+  'Practitioner',
+  practitionerSchema
+);
 
 export { PractitionerModel };

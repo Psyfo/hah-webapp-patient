@@ -322,7 +322,6 @@ const resendVerificationEmail = async (
       // Regenerate the verification token
       const nanoid = customAlphabet('1234567890abcdef', 32); // Use customAlphabet to generate a random string
       const verificationToken = nanoid();
-      logger.info(`Current patient: ${JSON.stringify(patient)}`);
       patient.account.verificationToken = verificationToken;
       logger.info(`New verification token issued: ${verificationToken}`);
 
@@ -334,9 +333,9 @@ const resendVerificationEmail = async (
 
       res.status(200).json({ message: 'Verification email sent' });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  } catch (error: any) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
   }
 };
 

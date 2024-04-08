@@ -24,6 +24,7 @@ interface IPractitioner extends Document {
   dob: Date;
   idUrl: string;
   avatarUrl: string;
+  qualificationUrl: string;
   phoneNumber: string;
   account: IPractitionerAccount;
 }

@@ -79,13 +79,14 @@ patientSchema.post<IPatient>('save', async function (doc) {
     return;
   }
 
-  logger.info('Sending verification email');
+  // Save the doc with the new verification token
+  await doc.save();
 
   await patientVerificationEmail(doc, doc.account.verificationToken);
 
   // Set firstVerificationEmailSent to true
   doc.account.firstVerificationEmailSent = true;
-  doc.save();
+  await doc.save();
 });
 
 const PatientModel = model<IPatient>('Patient', patientSchema);
