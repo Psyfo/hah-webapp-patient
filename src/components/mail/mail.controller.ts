@@ -198,7 +198,7 @@ const patientPasswordResetEmail = async (
 
 const practitionerVerificationEmail = async (
   practitioner: IPractitioner,
-  verificationToken: string
+  verificationToken: string | undefined
 ) => {
   const frontEndUrl: string | undefined =
     process.env.NODE_ENV === 'production'
