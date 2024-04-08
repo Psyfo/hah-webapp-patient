@@ -1,11 +1,11 @@
-import admin from 'firebase-admin';
-import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { logger } from '../../config/logger.config';
-import { AdminModel } from '../admin/admin.model';
-import { patientIDUploadEmail } from '../mail/mail.controller';
-import { PatientModel } from '../patient/patient.model';
-import { PractitionerModel } from '../practitioner/practitioner.model';
+import admin from "firebase-admin";
+import { Request, Response } from "express";
+import { v4 as uuidv4 } from "uuid";
+import { logger } from "../../config/logger.config";
+import { AdminModel } from "../admin/admin.model";
+import { patientIDUploadEmail } from "../mail/mail.controller";
+import { PatientModel } from "../patient/patient.model";
+import { PractitionerModel } from "../practitioner/practitioner.model";
 
 // Initialize Firebase Admin SDK
 const serviceAccountKeyPath =
@@ -301,6 +301,7 @@ const uploadPractitionerQualification = async (req: Request, res: Response) => {
     const file = req.file;
     console.log('File:', file?.originalname);
 
+    // Check if a file was uploaded
     if (!file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -334,6 +335,7 @@ const uploadPractitionerQualification = async (req: Request, res: Response) => {
       { new: true }
     );
 
+    // Check if the practitioner exists
     if (!practitioner) {
       return res.status(404).json({ error: 'Practitioner not found' });
     }
