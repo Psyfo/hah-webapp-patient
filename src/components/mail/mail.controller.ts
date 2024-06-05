@@ -17,8 +17,7 @@ const patientVerificationEmail = async (
   console.log('Verification token: ', verificationToken);
 
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -55,8 +54,7 @@ const patientVerificationEmail = async (
 
 const patientIDUploadEmail = async (patient: IPatient) => {
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -93,8 +91,7 @@ const patientIDUploadEmail = async (patient: IPatient) => {
 
 const patientIDApprovedEmail = async (patient: IPatient) => {
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -125,8 +122,7 @@ const patientIDApprovedEmail = async (patient: IPatient) => {
 
 const patientIDRejectedEmail = async (patient: IPatient) => {
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -165,8 +161,7 @@ const patientPasswordResetEmail = async (
       : process.env.FRONTEND_DEV_URL;
 
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -206,8 +201,7 @@ const practitionerVerificationEmail = async (
       : process.env.FRONTEND_DEV_URL;
 
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -240,8 +234,7 @@ const practitionerVerificationEmail = async (
 
 const practitionerIDUploadEmail = async (practitioner: IPractitioner) => {
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -276,8 +269,7 @@ const practitionerIDUploadEmail = async (practitioner: IPractitioner) => {
 
 const practitionerIDApprovedEmail = async (practitioner: IPractitioner) => {
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -306,8 +298,7 @@ const practitionerIDApprovedEmail = async (practitioner: IPractitioner) => {
 
 const practitionerIDRejectedEmail = async (practitioner: IPractitioner) => {
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
@@ -344,8 +335,7 @@ const practitionerPasswordResetEmail = async (
       : process.env.FRONTEND_DEV_URL;
 
   const url = 'api.zeptomail.eu/v1.1/email/template';
-  const token =
-    'Zoho-enczapikey yA6KbHsI4w//kz0FSBE11sWP+tw1/axq3Sux5n3kfMF1e4S03KE/hkdpItvoITra3NfZ4f4FbYtCII24vtFeeZY0M9MDfJTGTuv4P2uV48xh8ciEYNYhhJ+gALkXFqZBeB0lDCozQvkiWA==';
+  const token = process.env.ZEPTO_SENDMAIL_TOKEN;
 
   let client = new SendMailClient({ url, token });
 
